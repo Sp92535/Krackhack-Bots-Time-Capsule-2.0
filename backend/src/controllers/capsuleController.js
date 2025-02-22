@@ -37,58 +37,47 @@ export const createCapsule = async (req, res) => {
     }
 };
 
-export const updateUnlockDate = async (req, res) => {
+export const updateCapsule = async (req, res) => {
     try {
-        const { capsuleId, newUnlockDate } = req.body;
+        const { capsuleId, unlockDate, newEditors = [], newViewers = [] } = req.body;
         const ownerId = req.user.id;
 
         const capsule = await Capsule.findByPk(capsuleId);
         if (!capsule) return res.status(404).json({ message: "Capsule not found" });
-        if (!capsule.canModify) return res.status(400).json({ message: "Cannot modify." });
-
         if (capsule.ownerId !== ownerId) return res.status(403).json({ message: "Not authorized" });
+        if (!capsule.canModify) return res.status(400).json({ message: "Cannot modify capsule" });
 
-        if (new Date(capsule.unlockDate) > new Date()) {
-            return res.status(400).json({ message: "Cannot update unlock date before previous date has passed" });
+        const updates = {}; // Store fields to update
+
+        // Update Unlock Date if provided
+        if (unlockDate) {
+            if (new Date(unlockDate) > new Date()) {
+                return res.status(400).json({ message: "Date has already passed" });
+            }
+            updates.unlockDate = unlockDate;
         }
 
-        capsule.unlockDate = newUnlockDate;
-        await capsule.save();
+        // Update Editors & Viewers if provided
+        if (newEditors.length || newViewers.length) {
+            const [editorUsers, viewerUsers] = await Promise.all([
+                User.findAll({ where: { email: newEditors } }),
+                User.findAll({ where: { email: newViewers } }),
+            ]);
 
-        res.status(200).json({ message: "Unlock date updated successfully" });
+            if (editorUsers.length) await capsule.addEditors(editorUsers);
+            if (viewerUsers.length) await capsule.addViewers(viewerUsers);
+        }
+
+        // Apply updates
+        await capsule.update(updates);
+
+        res.status(200).json({ message: "Capsule updated successfully" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
 };
 
-export const addEditorsViewers = async (req, res) => {
-    try {
-        const { capsuleId, newEditors = [], newViewers = [] } = req.body;
-        const ownerId = req.user.id;
-
-        const capsule = await Capsule.findByPk(capsuleId);
-
-        if (!capsule) return res.status(404).json({ message: "Capsule not found" });
-        if (capsule.ownerId !== ownerId) return res.status(403).json({ message: "Not authorized" });
-        if (!capsule.canModify) return res.status(400).json({ message: "Cannot modify." });
-
-        // Fetch users in parallel
-        const [editorUsers, viewerUsers] = await Promise.all([
-            User.findAll({ where: { email: newEditors } }),
-            User.findAll({ where: { email: newViewers } }),
-        ]);
-
-        // Add new Editors & Viewers
-        if (editorUsers.length) await capsule.addEditors(editorUsers);
-        if (viewerUsers.length) await capsule.addViewers(viewerUsers);
-
-        res.status(200).json({ message: "Editors/Viewers updated successfully" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error" });
-    }
-};
 
 
 export const getUserCapsules = async (req, res) => {

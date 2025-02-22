@@ -9,8 +9,7 @@ const upload = multer({ storage });
 const router = express.Router();
 
 router.post("/create-capsule", protect, createCapsule);
-router.put("/update-unlock", protect, updateUnlockDate);
-router.put("/add-editors-viewers", protect, addEditorsViewers);
+router.put("/update-capsule", protect, updateUnlockDate);
 router.get("/my-capsules", protect, getUserCapsules);
 router.post("/upload", upload.array("files"), protect, uploadCapsuleData);
 router.put("/lock", protect, lockCapsule)
