@@ -92,8 +92,9 @@ const CreateCapsule = () => {
           <input type="text" name="viewers" value={formData.viewers} onChange={handleChange} />
         </div>
 
-        <button type="button" onClick={handleLock}>Lock Capsule</button>
+        {/* <button type="button" onClick={handleLock}>Lock Capsule</button> */}
         <button type="submit" disabled={!isLocked}>Save Changes</button>
+        <button type="button" disabled={!isLocked}>Create</button>
       </form>
     </div>
   );
