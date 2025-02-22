@@ -12,19 +12,27 @@ const s3 = new S3Client({
     },
 });
 
-export const uploadFileToR2 = async (fileBuffer, fileName, mimeType) => {
+export const uploadFilesToR2 = async (files, ownerId) => {
     try {
-        const params = {
-            Bucket: process.env.R2_BUCKET_NAME,
-            Key: fileName,
-            Body: fileBuffer,
-            ContentType: mimeType,
-        };
+        const uploadPromises = files.map(async (file) => {
+            const filePath = `${ownerId}/files/${file.originalname}`;
 
-        await s3.send(new PutObjectCommand(params));
-        return `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${fileName}`;
+            const params = {
+                Bucket: process.env.R2_BUCKET_NAME,
+                Key: filePath,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            };
+
+            await s3.send(new PutObjectCommand(params));
+            return `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${filePath}`;
+        });
+
+        const fileUrls = await Promise.all(uploadPromises);
+        return fileUrls;
     } catch (error) {
         console.error("R2 Upload Error:", error);
         throw error;
     }
 };
+

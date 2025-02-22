@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import crypto from "crypto";
-import { uploadFileToR2 } from "../utils/cloudflareR2.js";
+import { uploadFilesToR2 } from "../utils/cloudflareR2.js";
 import { User, Capsule } from "../models/index.js";
 
 export const createCapsule = async (req, res) => {
@@ -30,7 +30,7 @@ export const createCapsule = async (req, res) => {
         if (editorUsers.length) await capsule.addEditors(editorUsers);
         if (viewerUsers.length) await capsule.addViewers(viewerUsers);
 
-        res.status(201).json({ message: "Capsule created successfully" });
+        res.status(201).json({ message: "Capsule created successfully", capsuleId: capsule.id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
@@ -127,18 +127,45 @@ export const getUserCapsules = async (req, res) => {
     }
 };
 
+
 export const uploadCapsuleData = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: "No files uploaded" });
+        }
 
-        const fileUrl = await uploadFileToR2(req.file.buffer, req.file.originalname, req.file.mimetype);
+        const { capsuleId } = req.body;
+        
+        const userId = req.user.id; // Current user
 
-        res.status(200).json({ message: "File uploaded successfully", fileUrl });
+        const capsule = await Capsule.findByPk(capsuleId, {
+            include: [{ model: User, as: "Editors", attributes: ["id"] }],
+        });
+
+        if (!capsule) return res.status(404).json({ message: "Capsule not found" });
+
+        // Check if user is the Owner or an Editor
+        const isOwner = capsule.ownerId === userId;
+        const isEditor = capsule.Editors.some((editor) => editor.id === userId);
+
+        if (!isOwner && !isEditor) {
+            return res.status(403).json({ message: "Not authorized to upload files" });
+        }
+
+        const ownerId = capsule.ownerId;
+        const fileUrls = await uploadFilesToR2(req.files, ownerId);
+        const folderUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${ownerId}/files/`;
+
+        capsule.capsuleDataLink = folderUrl;
+        await capsule.save();
+
+        res.status(200).json({ message: "Files uploaded successfully" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Upload failed" });
     }
 };
+
 
 export const lockCapsule = async (req, res) => {
     try {
