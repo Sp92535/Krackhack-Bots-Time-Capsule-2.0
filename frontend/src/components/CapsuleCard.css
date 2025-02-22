@@ -1,0 +1,160 @@
+/* Time Capsule Card Design */
+.capsule-card {
+  background: #f5e6d3;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-align: center;
+  position: relative;
+  min-height: 420px;
+  border: 4px solid #d4b08a;
+  margin: 15px;
+  transform-style: preserve-3d;
+}
+
+/* Metallic Band Effect */
+.capsule-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: linear-gradient(to right, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+/* Lock Symbol */
+.lock-indicator {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  font-size: 1.8rem;
+  color: #FF6B35;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Countdown Timer */
+.countdown {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  font-size: 0.9rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Capsule Image Container */
+.capsule-image {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  border: 3px solid #d4b08a;
+  background: #fff;
+}
+
+.capsule-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Locked State */
+.capsule-card.locked {
+  background: linear-gradient(to bottom right, #f0e0d0 0%, #e8d4c0 100%);
+}
+
+.capsule-card.locked .capsule-image {
+  filter: grayscale(0.3) brightness(0.9);
+  position: relative;
+}
+
+.capsule-card.locked .capsule-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Capsule Content */
+.capsule-content {
+  padding: 20px 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.capsule-card h3 {
+  font-size: 2rem;
+  color: #5e371a;
+  margin: 15px 0;
+  position: relative;
+  display: inline-block;
+  padding: 0 15px;
+}
+
+.capsule-card h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #FF6B35;
+}
+
+/* Date Styling */
+.capsule-date {
+  font-size: 1.1rem;
+  color: #7a5c48;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .capsule-card {
+    min-height: 380px;
+    margin: 10px;
+  }
+  
+  .capsule-image {
+    height: 180px;
+  }
+  
+  .lock-indicator {
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+  }
+  
+  .countdown {
+    top: 50px;
+    right: 10px;
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,30 @@
+.capsule-card {
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px;
+    position: relative;
+  }
+  
+  .capsule-card.locked {
+    opacity: 0.6;
+  }
+  
+  .capsule-card.locked::after {
+    content: "🔒";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 24px;
+  }
+  
+  .capsule-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .capsule-creator,
+  .capsule-countdown {
+    font-size: 14px;
+  }
+  
