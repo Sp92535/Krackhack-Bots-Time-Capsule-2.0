@@ -7,9 +7,9 @@ import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/SignUp/Signup";
 import AuthContainer from "./components/AuthContainer/AuthContainer";
-import CreateCapsule from "./components/CreateCapsule/CreateCapsule"; // Import CreateCapsule
+import CreateCapsule from "./pages/CreateCapsule/CreateCapsule"; // Import CreateCapsule
 import "./index.css"; // Global styles
-import "./components/CreateCapsule/CreateCapsule.css"; // Import capsule styles
+import "./pages/CreateCapsule/CreateCapsule.css"; // Import capsule styles
 
 const App = () => {
   return (

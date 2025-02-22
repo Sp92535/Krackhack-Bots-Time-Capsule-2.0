@@ -1,5 +1,5 @@
 import express from "express";
-import { addEditorsViewers, createCapsule, getUserCapsules, lockCapsule, updateUnlockDate, uploadCapsuleData } from "../controllers/capsuleController.js";
+import { createCapsule, getUserCapsules, lockCapsule, updateCapsule, uploadCapsuleData } from "../controllers/capsuleController.js";
 import protect from "../middlewares/authMiddleware.js";
 import multer from "multer"
 
@@ -9,8 +9,7 @@ const upload = multer({ storage });
 const router = express.Router();
 
 router.post("/create-capsule", protect, createCapsule);
-router.put("/update-unlock", protect, updateUnlockDate);
-router.put("/add-editors-viewers", protect, addEditorsViewers);
+router.put("/update-capsule", protect, updateCapsule);
 router.get("/my-capsules", protect, getUserCapsules);
 router.post("/upload", upload.array("files"), protect, uploadCapsuleData);
 router.put("/lock", protect, lockCapsule)

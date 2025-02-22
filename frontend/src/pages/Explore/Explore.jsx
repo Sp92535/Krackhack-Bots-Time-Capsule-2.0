@@ -12,7 +12,7 @@ const Explore = () => {
   useEffect(() => {
     const fetchCapsules = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/capsules");
+        const response = await axios.get("http://localhost:6969/api/capsules");
         setCapsules(response.data);
       } catch (error) {
         console.error("Error fetching capsules:", error);
@@ -23,8 +23,11 @@ const Explore = () => {
   }, []);
 
   const handleCreateCapsule = () => {
+    // Navigate to the dedicated CreateCapsule page
     navigate("/create-capsule");
   };
+  
+  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
