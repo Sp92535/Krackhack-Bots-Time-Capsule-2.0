@@ -1,30 +1,188 @@
-.capsule-card {
-    border: 1px solid #ddd;
-    padding: 16px;
-    border-radius: 8px;
-    margin: 16px;
-    position: relative;
+/* CreateCapsule.css */
+.create-capsule-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 40px;
+  background: #f8f1ea;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 4px solid #d4b08a;
+  position: relative;
+  animation: fadeIn 1s ease;
+}
+
+.create-capsule-container::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: linear-gradient(to right, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.create-capsule-container h1 {
+  font-size: 2.8rem;
+  color: #ff6b35;
+  margin-bottom: 40px;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  position: relative;
+  animation: fadeIn 1s ease;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  color: #5e371a;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.form-group input, 
+.form-group textarea {
+  width: 100%;
+  padding: 15px;
+  border: 3px solid #d4b08a;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #5e371a;
+  transition: all 0.3s ease;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ff6b35;
+  box-shadow: 0 0 15px rgba(255, 107, 53, 0.1);
+}
+
+.form-group input[type="datetime-local"] {
+  cursor: pointer;
+  color: #5e371a;
+}
+
+.form-group input[type="file"] {
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.form-group input[type="file"]::-webkit-file-upload-button {
+  background: #ff6b35;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: white;
+  margin-right: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-weight: 600;
+}
+
+.form-group input[type="file"]::-webkit-file-upload-button:hover {
+  background: #e85a2c;
+  transform: translateY(-2px);
+}
+
+button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button[type="button"] {
+  background-color: #ff6b35;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+}
+
+button[type="button"]:hover {
+  background-color: #e85a2c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+button[type="submit"] {
+  background-color: #5e371a;
+  color: white;
+  box-shadow: 0 4px 15px rgba(94, 55, 26, 0.2);
+}
+
+button[type="submit"]:hover {
+  background-color: #4a2c15;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(94, 55, 26, 0.3);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .capsule-card.locked {
-    opacity: 0.6;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .capsule-card.locked::after {
-    content: "🔒";
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 24px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .create-capsule-container {
+    margin: 20px;
+    padding: 30px;
   }
-  
-  .capsule-title {
-    font-size: 18px;
-    font-weight: bold;
+
+  .create-capsule-container h1 {
+    font-size: 2.2rem;
   }
-  
-  .capsule-creator,
-  .capsule-countdown {
-    font-size: 14px;
+
+  button {
+    width: 100%;
+    margin-bottom: 15px;
+    margin-right: 0;
   }
-  
+}
+
+@media (max-width: 480px) {
+  .create-capsule-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-group label {
+    font-size: 1rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 12px;
+  }
+}

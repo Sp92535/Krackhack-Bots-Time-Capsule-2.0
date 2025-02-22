@@ -1,13 +1,17 @@
 import React from "react";
 import "./CapsuleCard.css";
+import Navbar from "./Navbar";
 
-const CapsuleCard = ({ title, creator, openDate }) => {
-  return (
+const CapsuleCard = ({ title, creator, openDate, isLocked }) => {
+  return (<>
+    <Navbar />
     <div className="capsule-card">
-      <h3 className="capsule-title">{title}</h3>
-      <p className="capsule-creator">Created by: {creator}</p>
-      <p className="capsule-countdown">Opens on: {openDate}</p>
+      <h3>{title}</h3>
+      <p>Created by: {creator}</p>
+      <p>Unlock Date: {openDate}</p>
+      {isLocked && <p className="locked-status">🔒 Locked</p>}
     </div>
+    </>
   );
 };
 

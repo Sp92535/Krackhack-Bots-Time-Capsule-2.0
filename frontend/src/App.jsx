@@ -4,14 +4,17 @@ import Navbar from "./components/Navbar";
 import Explore from "./pages/Explore/Explore";
 import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login"; // Import Login Page
-import Signup from "./pages/SignUp/Signup"; // Import Signup Page
-import AuthContainer from "./components/AuthContainer/AuthContainer"; // Import AuthContainer
+import Login from "./pages/Login/Login";
+import Signup from "./pages/SignUp/Signup";
+import AuthContainer from "./components/AuthContainer/AuthContainer";
+import CreateCapsule from "./components/CreateCapsule/CreateCapsule"; // Import CreateCapsule
 import "./index.css"; // Global styles
+import "./components/CreateCapsule/CreateCapsule.css"; // Import capsule styles
 
 const App = () => {
   return (
     <Router>
+      {/* <Navbar /> */}
       <AuthRoutes />
     </Router>
   );
@@ -30,7 +33,7 @@ const AuthRoutes = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("expiryTime");
         alert("Session expired. Please log in again.");
-        navigate("/login"); // Redirect to login if token expired
+        navigate("/login");
       }
     }
   }, [navigate]);
@@ -40,20 +43,9 @@ const AuthRoutes = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/home" element={<Home />} />
-
-      {/* Wrap Login and Signup inside AuthContainer */}
-      <Route
-        path="/login"
-        element={
-          <AuthContainer />
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <AuthContainer />
-        }
-      />
+      <Route path="/create-capsule" element={<CreateCapsule />} />
+      <Route path="/login" element={<AuthContainer />} />
+      <Route path="/signup" element={<AuthContainer />} />
     </Routes>
   );
 };

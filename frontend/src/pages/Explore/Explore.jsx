@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Explore.css";
 import Navbar from "../../components/Navbar";
 import CapsuleCard from "../../components/CapsuleCard";
@@ -8,15 +9,28 @@ const Explore = () => {
   const [capsules, setCapsules] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCapsules = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/capsules");
+        setCapsules(response.data);
+      } catch (error) {
+        console.error("Error fetching capsules:", error);
+      }
+    };
+
+    fetchCapsules();
+  }, []);
+
   const handleCreateCapsule = () => {
-    navigate("/create-capsule"); // Redirect to the form for creating a new capsule
+    navigate("/create-capsule");
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryTime");
     alert("Logged out successfully.");
-    navigate("/login"); // Redirect to login page after logout
+    navigate("/login");
   };
 
   return (
@@ -40,6 +54,7 @@ const Explore = () => {
               title={capsule.title}
               creator={capsule.creator}
               openDate={capsule.openDate}
+              isLocked={capsule.isLocked}
             />
           ))}
         </div>
