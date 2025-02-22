@@ -7,13 +7,24 @@ const Capsule = sequelize.define("Capsule", {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
+    capsuleName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING,
+    },
     ownerId: {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    lockDate: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+    isLocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    canModify:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     },
     unlockDate: {
         type: DataTypes.DATE,
@@ -25,7 +36,7 @@ const Capsule = sequelize.define("Capsule", {
     },
     capsuleDataLink: {
         type: DataTypes.STRING,
-        allowNull: false, // Firebase storage link
+        allowNull: false, // Cloud flare storage link
     },
 });
 

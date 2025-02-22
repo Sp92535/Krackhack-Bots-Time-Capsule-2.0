@@ -1,5 +1,5 @@
 import sequelize from "../config/db.js";
-import {User, Capsule} from "../models/index.js"
+import { User, Capsule } from "../models/index.js"
 
 const connectDB = async () => {
     try {
