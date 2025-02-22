@@ -14,6 +14,6 @@ router.put("/update-capsule", protect, updateCapsule);
 router.get("/my-capsules", protect, getUserCapsules);
 router.post("/upload", upload.array("files"), protect, uploadCapsuleData);
 router.put("/lock", protect, lockCapsule)
-router.get("/open/:capsuleId",protect,streamCapsuleFiles);
+router.get("/open/:capsuleId",streamCapsuleFiles);
 
 export default router
