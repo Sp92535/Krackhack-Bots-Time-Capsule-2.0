@@ -1,5 +1,6 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
+import { User, Capsule } from "../models/index.js";
 
 dotenv.config();
 
@@ -36,3 +37,57 @@ export const uploadFilesToR2 = async (files, ownerId) => {
     }
 };
 
+
+export const streamCapsuleFiles = async (req, res) => {
+    try {
+        const { capsuleId } = req.params;
+
+        // Fetch capsule
+        const capsule = await Capsule.findByPk(capsuleId);
+        if (!capsule) return res.status(404).json({ message: "Capsule not found" });
+
+        // Check access permissions
+        if (capsule.isLocked || capsule.canModify) {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        // Folder path in R2
+        const folderPath = `${capsule.ownerId}/files/`;
+
+        // List all files in the folder
+        const listParams = { Bucket: process.env.R2_BUCKET_NAME, Prefix: folderPath };
+        const { Contents } = await s3.send(new ListObjectsV2Command(listParams));
+
+        if (!Contents || Contents.length === 0) {
+            return res.status(404).json({ message: "No files found" });
+        }
+
+        // Fetch file streams
+        const filesData = await Promise.all(
+            Contents.map(async (file) => {
+                const getParams = { Bucket: process.env.R2_BUCKET_NAME, Key: file.Key };
+                const { Body, ContentType } = await s3.send(new GetObjectCommand(getParams));
+
+                // Read file stream into a buffer
+                const chunks = [];
+                for await (const chunk of Body) {
+                    chunks.push(chunk);
+                }
+                const fileBuffer = Buffer.concat(chunks);
+
+                // Convert to Base64 for frontend display
+                return {
+                    fileName: file.Key.split("/").pop(),
+                    contentType: ContentType,
+                    data: `data:${ContentType};base64,${fileBuffer.toString("base64")}`,
+                };
+            })
+        );
+
+        // Send JSON response with all file data
+        res.status(200).json({ files: filesData });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error fetching files" });
+    }
+};

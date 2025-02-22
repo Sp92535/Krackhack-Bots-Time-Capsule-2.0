@@ -51,7 +51,10 @@ export const updateCapsule = async (req, res) => {
 
         // Update Unlock Date if provided
         if (unlockDate) {
-            if (new Date(unlockDate) > new Date()) {
+            console.log("Unlock Date:", new Date(unlockDate).toISOString());
+            console.log("Current Date:", new Date().toISOString());
+
+            if (new Date(unlockDate) < new Date()) {
                 return res.status(400).json({ message: "Date has already passed" });
             }
             updates.unlockDate = unlockDate;
@@ -124,7 +127,7 @@ export const uploadCapsuleData = async (req, res) => {
         }
 
         const { capsuleId } = req.body;
-        
+
         const userId = req.user.id; // Current user
 
         const capsule = await Capsule.findByPk(capsuleId, {
@@ -168,7 +171,11 @@ export const lockCapsule = async (req, res) => {
         if (capsule.ownerId !== ownerId) return res.status(403).json({ message: "Not authorized" });
 
         // Lock the capsule if unlockDate is in the future
-        if (new Date(capsule.unlockDate) > new Date()) {
+        console.log("Unlock Date:", new Date(capsule.unlockDate).toISOString());
+        console.log("Current Date:", new Date().toISOString());
+
+
+        if (new Date(capsule.unlockDate).getTime() > Date.now()) {
             capsule.isLocked = true;
             capsule.canModify = false;
             await capsule.save();
