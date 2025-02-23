@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Navbar from "../../components/Navbar";
 import "./Home.css";
-import CapsuleCarousel from "../CapsuleCarousel/CapsuleCarousel";
+import CapsuleCard from "../../components/CapsuleCard";
 
 const Home = () => {
   const [capsules, setCapsules] = useState([]);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryTime");
     alert("Logged out successfully.");
-    navigate("/login");
+    navigate("/login"); // Navigate after logout
   };
 
   useEffect(() => {
@@ -39,22 +39,10 @@ const Home = () => {
 
       <div className="dashboard-container">
         <h1>Your Capsules</h1>
-
         <div className="capsule-grid">
-          {capsules.length > 0 ? (
-            capsules.map((capsule) => (
-              <div
-                key={capsule.id}
-                className="capsule-item"
-                onClick={() => navigate(`/carousel/${capsule.id}`)} // Navigate on click
-                style={{ cursor: "pointer" }} // Indicate clickable item
-              >
-                <CapsuleCarousel capsuleId={capsule.id} />
-              </div>
-            ))
-          ) : (
-            <p>No capsules available.</p>
-          )}
+          {capsules.map((capsule) => (
+            <CapsuleCard key={capsule.id} capsule={capsule} />
+          ))}
         </div>
       </div>
     </>

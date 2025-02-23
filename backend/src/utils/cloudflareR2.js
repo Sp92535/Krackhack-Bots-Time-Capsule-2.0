@@ -13,10 +13,10 @@ const s3 = new S3Client({
     },
 });
 
-export const uploadFilesToR2 = async (files, ownerId) => {
+export const uploadFilesToR2 = async (files, capsuleId) => {
     try {
         const uploadPromises = files.map(async (file) => {
-            const filePath = `${ownerId}/files/${file.originalname}`;
+            const filePath = `${capsuleId}/files/${file.originalname}`;
 
             const params = {
                 Bucket: process.env.R2_BUCKET_NAME,
@@ -52,7 +52,7 @@ export const streamCapsuleFiles = async (req, res) => {
         }
 
         // Folder path in R2
-        const folderPath = `${capsule.ownerId}/files/`;
+        const folderPath = `${capsuleId}/files/`;
 
         // List all files in the folder
         const listParams = { Bucket: process.env.R2_BUCKET_NAME, Prefix: folderPath };

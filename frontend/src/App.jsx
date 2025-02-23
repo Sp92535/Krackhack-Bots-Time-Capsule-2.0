@@ -54,7 +54,7 @@ const AuthRoutes = () => {
       <Route path="/login" element={<AuthContainer />} />
       <Route path="/signup" element={<AuthContainer />} />
       <Route path="/capsule/:id" element={<CapsuleUploadPage />} />
-      <Route path="/capsule/view/:id" element={<CapsuleCarousel />} />
+      <Route path="/capsule/view/:id" element={<CapsuleCarousel/>} />
     </Routes>
   );
 };

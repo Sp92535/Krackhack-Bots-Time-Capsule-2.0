@@ -11,7 +11,8 @@ const CapsuleCard = ({ capsule }) => {
   });
   const handleClick = () => {
     if (!capsule.isLocked && !capsule.canModify) {
-      navigate(`/capsule/${capsule.id}`, { state: { capsule } });
+      navigate(`/capsule/view/${capsule.id}`, { state: { capsule } });
+      return;
     }
     if (!capsule.isLocked) {
       navigate(`/capsule/${capsule.id}`, { state: { capsule } });

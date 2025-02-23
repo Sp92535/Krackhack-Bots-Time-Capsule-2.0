@@ -86,7 +86,7 @@ export const updateCapsule = async (req, res) => {
 export const getUserCapsules = async (req, res) => {
     try {
         const userId = req.user.id;
-
+        
         const capsules = await Capsule.findAll({
             attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate"], // Select only required fields
             include: [
@@ -111,7 +111,7 @@ export const getUserCapsules = async (req, res) => {
                 ],
             },
         });
-
+        
         res.status(200).json({ capsules });
     } catch (err) {
         console.error(err);
@@ -145,8 +145,8 @@ export const uploadCapsuleData = async (req, res) => {
         }
 
         const ownerId = capsule.ownerId;
-        const fileUrls = await uploadFilesToR2(req.files, ownerId);
-        const folderUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${ownerId}/files/`;
+        const fileUrls = await uploadFilesToR2(req.files, capsuleId);
+        const folderUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${capsuleId}/files/`;
 
         capsule.capsuleDataLink = folderUrl;
         await capsule.save();

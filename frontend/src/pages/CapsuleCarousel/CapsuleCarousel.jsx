@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import "./CapsuleCarousel.css";
+import { useLocation } from "react-router-dom";
 
-const CapsuleCarousel = ({ capsuleId }) => {
+const CapsuleCarousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [progress, setProgress] = useState(0);
+    const location = useLocation();
+    const capsule = location.state?.capsule;
+    const capsuleId = capsule.id;
     const videoRefs = useRef([]);
 
     useEffect(() => {
@@ -170,7 +174,12 @@ const CapsuleCarousel = ({ capsuleId }) => {
                                     }}
                                     controls
                                     className="carousel-video"
+                                    src={file.data} // ✅ Add this line
+                                    onError={(e) => {
+                                        e.target.src = "/api/placeholder/video.mp4"; // Optional fallback
+                                    }}
                                 />
+
                             ) : (
                                 <div className="unsupported-file">
                                     <p>Unsupported file type: {file.contentType}</p>
