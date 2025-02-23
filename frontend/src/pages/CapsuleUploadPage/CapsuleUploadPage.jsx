@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import "./CapsuleUploadPage.css";
 
@@ -11,6 +11,9 @@ const CapsuleUploadPage = () => {
   const [viewers, setViewers] = useState("");
   const [editors, setEditors] = useState("");
   const [unlockDate, setUnlockDate] = useState("");
+  const location = useLocation()
+  const navigate = useNavigate()
+  const capsule = location.state?.capsule;
 
   const handleFileChange = (event) => {
     setFiles(Array.from(event.target.files));
@@ -55,49 +58,69 @@ const CapsuleUploadPage = () => {
     event.preventDefault();
 
     const newEditors = editors
-        .split(',')
-        .map(email => email.trim())
-        .filter(email => email);
+      .split(',')
+      .map(email => email.trim())
+      .filter(email => email);
 
     const newViewers = viewers
-        .split(',')
-        .map(email => email.trim())
-        .filter(email => email);
+      .split(',')
+      .map(email => email.trim())
+      .filter(email => email);
 
     try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:6969/api/capsule/update`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                capsuleId: id,
-                unlockDate: unlockDate || undefined,
-                newEditors,
-                newViewers,
-            }),
-        });
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:6969/api/capsule/update-capsule`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          capsuleId: id,
+          unlockDate: unlockDate || undefined,
+          newEditors,
+          newViewers,
+        }),
+      });
 
-        const responseData = await response.json();
-        console.log("API Response:", responseData);
+      const responseData = await response.json();
+      console.log("API Response:", responseData);
 
-        if (response.ok) {
-            alert("Capsule updated successfully!");
-        } else {
-            alert(responseData.message || "Failed to update capsule.");
-        }
+      if (response.ok) {
+        alert("Capsule updated successfully!");
+      } else {
+        alert(responseData.message || "Failed to update capsule.");
+      }
     } catch (error) {
-        console.error("Error updating capsule:", error);
-        alert("Error updating capsule");
+      console.error("Error updating capsule:", error);
+      alert("Error updating capsule");
     }
-};
+  };
 
+  const handleLock = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:6969/api/capsule/lock`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          capsuleId: id
+        }),
+      });
+      alert("LOCKED")
+      navigate('/home')
+    } catch (error) {
+      console.log(error);
+      alert("Failed to Lock capsule.");
+    }
+  }
 
   return (
     <div className="capsule-upload-container">
-      <h1>Upload to Capsule {id}</h1>
+      <h1>Update Capsule {capsule.capsuleName}</h1>
 
       <form onSubmit={handleSaveChanges}>
         <label>
@@ -132,11 +155,11 @@ const CapsuleUploadPage = () => {
 
         <label>
           Upload Files:
-          <input 
-            type="file" 
-            multiple 
-            onChange={handleFileChange} 
-            disabled={isLocked} 
+          <input
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            disabled={isLocked}
           />
         </label>
 
@@ -162,10 +185,10 @@ const CapsuleUploadPage = () => {
           />
         </label>
 
-        
+
 
         <div className="button-container">
-          <button type="button" onClick={() => setIsLocked(!isLocked)}>
+          <button type="button" onClick={handleLock}>
             {isLocked ? "Unlock Capsule" : "Lock Capsule"}
           </button>
           <button type="button" onClick={handleUpload} disabled={isLocked}>
