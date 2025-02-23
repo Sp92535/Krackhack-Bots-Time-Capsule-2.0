@@ -14,20 +14,19 @@ const Home = () => {
     alert("Logged out successfully.");
     navigate("/login"); // Navigate after logout
   };
-
+  const fetchCapsules = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:6969/api/capsule/my-capsules", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setCapsules(Array.isArray(data.capsules) ? data.capsules : []);
+    } catch (error) {
+      console.error("Error fetching capsules:", error);
+    }
+  };
   useEffect(() => {
-    const fetchCapsules = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:6969/api/capsule/my-capsules", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await response.json();
-        setCapsules(Array.isArray(data.capsules) ? data.capsules : []);
-      } catch (error) {
-        console.error("Error fetching capsules:", error);
-      }
-    };
 
     fetchCapsules();
   }, []);
@@ -41,7 +40,7 @@ const Home = () => {
         <h1>Your Capsules</h1>
         <div className="capsule-grid">
           {capsules.map((capsule) => (
-            <CapsuleCard key={capsule.id} capsule={capsule} />
+            <CapsuleCard key={capsule.id} capsule={capsule} fetchCapsules={fetchCapsules} />
           ))}
         </div>
       </div>

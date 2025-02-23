@@ -1,75 +1,67 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import "./CapsuleUploadPage.css";
 
 const CapsuleUploadPage = () => {
   const { id } = useParams();
-  const [files, setFiles] = useState([]);
-  const [isLocked, setIsLocked] = useState(false);
-  const [capsuleName, setCapsuleName] = useState("");
-  const [description, setDescription] = useState("");
-  const [viewers, setViewers] = useState("");
-  const [editors, setEditors] = useState("");
-  const [unlockDate, setUnlockDate] = useState("");
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [search] = useSearchParams();
+  const isPublic = search.get("isPublic") === "true";
+  const location = useLocation();
+  const navigate = useNavigate();
   const capsule = location.state?.capsule;
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    capsuleName: "",
+    description: "",
+    viewers: "",
+    editors: "",
+    unlockDate: "",
+    files: [],
+  });
 
-  const handleFileChange = (event) => {
-    setFiles(Array.from(event.target.files));
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, files: Array.from(e.target.files) }));
   };
 
   const handleUpload = async () => {
-    if (files.length === 0) {
-      alert("Please select at least one file.");
-      return;
-    }
-
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-    formData.append("capsuleId", id);
-
+    if (!formData.files.length) return alert("Please select at least one file.");
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:6969/api/capsule/upload`, {
+      const uploadData = new FormData();
+      formData.files.forEach((file) => uploadData.append("files", file));
+      uploadData.append("capsuleId", id);
+
+      const response = await fetch("http://localhost:6969/api/capsule/upload", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
+        headers: { Authorization: `Bearer ${token}` },
+        body: uploadData,
       });
 
       if (response.ok) {
         alert("Files uploaded successfully!");
-        setFiles([]);
+        setFormData((prev) => ({ ...prev, files: [] }));
       } else {
-        const error = await response.json();
-        alert(error.message || "Failed to upload files.");
+        alert("Failed to upload files.");
       }
     } catch (error) {
-      console.error("Error uploading files:", error);
       alert("Error uploading files");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSaveChanges = async (event) => {
-    event.preventDefault();
-
-    const newEditors = editors
-      .split(',')
-      .map(email => email.trim())
-      .filter(email => email);
-
-    const newViewers = viewers
-      .split(',')
-      .map(email => email.trim())
-      .filter(email => email);
-
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:6969/api/capsule/update-capsule`, {
+      const response = await fetch("http://localhost:6969/api/capsule/update-capsule", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -77,124 +69,80 @@ const CapsuleUploadPage = () => {
         },
         body: JSON.stringify({
           capsuleId: id,
-          unlockDate: unlockDate || undefined,
-          newEditors,
-          newViewers,
+          unlockDate: formData.unlockDate || undefined,
+          newEditors: formData.editors.split(",").map((e) => e.trim()).filter(Boolean),
+          newViewers: formData.viewers.split(",").map((e) => e.trim()).filter(Boolean),
         }),
       });
-
-      const responseData = await response.json();
-      console.log("API Response:", responseData);
-
-      if (response.ok) {
-        alert("Capsule updated successfully!");
-      } else {
-        alert(responseData.message || "Failed to update capsule.");
-      }
+      if (response.ok) alert("Capsule updated successfully!");
+      else alert("Failed to update capsule.");
     } catch (error) {
-      console.error("Error updating capsule:", error);
       alert("Error updating capsule");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLock = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:6969/api/capsule/lock`, {
+      await fetch("http://localhost:6969/api/capsule/lock", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          capsuleId: id
-        }),
+        body: JSON.stringify({ capsuleId: id }),
       });
-      alert("LOCKED")
-      navigate('/home')
+      alert("LOCKED");
+      navigate("/home");
     } catch (error) {
-      console.log(error);
       alert("Failed to Lock capsule.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="capsule-upload-container">
-      <h1>Update Capsule {capsule.capsuleName}</h1>
-
+      <h1>Update Capsule {capsule?.capsuleName}</h1>
+      {isPublic && <h2>This is a public capsule. You can only upload files!</h2>}
       <form onSubmit={handleSaveChanges}>
         <label>
           Capsule Name:
-          <input
-            type="text"
-            value={capsuleName}
-            onChange={(e) => setCapsuleName(e.target.value)}
-            disabled={isLocked}
-          />
+          <input type="text" name="capsuleName" value={formData.capsuleName} onChange={handleInputChange} />
         </label>
 
         <label>
           Description:
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            disabled={isLocked}
-          />
+          <textarea name="description" value={formData.description} onChange={handleInputChange} />
         </label>
 
         <label>
           Unlock Date:
-          <input
-            type="datetime-local"
-            value={unlockDate}
-            onChange={(e) => setUnlockDate(e.target.value)}
-            disabled={isLocked}
-            min={new Date().toISOString().split('T')[0]}
-          />
+          <input type="datetime-local" name="unlockDate" value={formData.unlockDate} onChange={handleInputChange} />
         </label>
 
         <label>
           Upload Files:
-          <input
-            type="file"
-            multiple
-            onChange={handleFileChange}
-            disabled={isLocked}
-          />
+          <input type="file" multiple onChange={handleFileChange} />
         </label>
 
         <label>
           Viewers (comma-separated emails):
-          <input
-            type="text"
-            value={viewers}
-            onChange={(e) => setViewers(e.target.value)}
-            placeholder="viewer1@example.com, viewer2@example.com"
-            disabled={isLocked}
-          />
+          <input type="text" name="viewers" value={formData.viewers} onChange={handleInputChange} />
         </label>
 
         <label>
           Editors (comma-separated emails):
-          <input
-            type="text"
-            value={editors}
-            onChange={(e) => setEditors(e.target.value)}
-            placeholder="editor1@example.com, editor2@example.com"
-            disabled={isLocked}
-          />
+          <input type="text" name="editors" value={formData.editors} onChange={handleInputChange} />
         </label>
 
-
-
         <div className="button-container">
-          <button type="button" onClick={handleLock}>
-            {isLocked ? "Unlock Capsule" : "Lock Capsule"}
-          </button>
-          <button type="button" onClick={handleUpload} disabled={isLocked}>
-            Upload Files
-          </button>
-          <button type="submit">Save Changes</button>
+          <button type="button" onClick={handleLock} disabled={loading}>Lock Capsule</button>
+          <button type="button" onClick={handleUpload} disabled={loading}>Upload Files</button>
+          <button type="submit" disabled={loading}>Save Changes</button>
         </div>
       </form>
     </div>

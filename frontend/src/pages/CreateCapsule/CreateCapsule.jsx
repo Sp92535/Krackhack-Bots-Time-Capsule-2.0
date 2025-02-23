@@ -10,9 +10,9 @@ const CreateCapsule = () => {
     description: "",
     unlockDate: "",
     editors: [],
-    viewers: []
+    viewers: [],
+    isPublic: false,
   });
-  const [isLocked, setIsLocked] = useState(false);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -25,36 +25,20 @@ const CreateCapsule = () => {
       [name]: name === "editors" || name === "viewers" ? value.split(",") : value,
     }));
   };
-  
-
-  const handleLock = (e) => {
-    e.preventDefault();
-    setIsLocked(true);
-    handleSubmit(e);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.capsuleName.trim()) {
       alert("Please enter a capsule name!");
       return;
     }
 
-    const capsuleData = new FormData();
-    capsuleData.append("capsuleName", formData.capsuleName);
-    capsuleData.append("description", formData.description);
-    capsuleData.append("unlockDate", formData.unlockDate);
-    capsuleData.append("editors", JSON.stringify(formData.editors));  // Convert arrays to JSON
-    capsuleData.append("viewers", JSON.stringify(formData.viewers));
-    for (let pair of capsuleData.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
-    }
     try {
       const token = localStorage.getItem("token");
-    
+
       console.log(JSON.stringify(formData)); // Fixed the incorrect console.log9
-    
+
       const response = await fetch("http://localhost:6969/api/capsule/create-capsule", {
         method: "POST",
         headers: {
@@ -63,19 +47,19 @@ const CreateCapsule = () => {
         },
         body: JSON.stringify(formData),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    
+
       alert("Capsule created successfully!");
       navigate("/home");
     } catch (error) {
       console.error("Error saving capsule:", error);
       alert("Failed to create capsule.");
     }
-    
-    
+
+
   };
 
   return (
@@ -94,16 +78,23 @@ const CreateCapsule = () => {
             <textarea name="description" value={formData.description} onChange={handleChange} rows="5" required></textarea>
           </div>
           <div className="form-group">
+            <label>
+              Make Capsule Public
+            </label>
+              <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })} />
+          </div>
+
+          <div className="form-group">
             <label>Unlock Date</label>
             <input type="datetime-local" name="unlockDate" value={formData.unlockDate} onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Editors (comma-separated emails)</label>
-            <input type="text" name="editors" value={formData.editors} onChange={handleChange} />
+            <input type="text" name="editors" value={formData.editors} onChange={handleChange} disabled={formData.isPublic} />
           </div>
           <div className="form-group">
             <label>Viewers (comma-separated emails)</label>
-            <input type="text" name="viewers" value={formData.viewers} onChange={handleChange} />
+            <input type="text" name="viewers" value={formData.viewers} onChange={handleChange} disabled={formData.isPublic}/>
           </div>
           <button type="submit">Create Capsule</button>
         </form>
