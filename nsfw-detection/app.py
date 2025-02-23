@@ -15,7 +15,15 @@ import time
 
 # Initialize Flask App
 app = Flask(__name__)
-CORS(app)
+app = Flask(__name__)
+CORS(app, supports_credentials=True)  # Enable CORS globally
+
+@app.after_request
+def apply_cors(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
 
 # Load NSFW Model
 model = AutoModelForImageClassification.from_pretrained("Falconsai/nsfw_image_detection")
@@ -43,7 +51,7 @@ def check_nsfw(image):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('working')
 
 @app.route("/upload/image", methods=["POST"])
 def upload_image():
