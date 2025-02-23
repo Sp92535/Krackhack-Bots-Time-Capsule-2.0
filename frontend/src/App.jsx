@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Explore from "./pages/Explore/Explore";
 import Home from "./pages/Home/Home";
@@ -9,8 +14,8 @@ import Signup from "./pages/SignUp/Signup";
 import AuthContainer from "./components/AuthContainer/AuthContainer";
 import CreateCapsule from "./pages/CreateCapsule/CreateCapsule"; // Import CreateCapsule
 import "./index.css"; // Global styles
+import CapsuleUploadPage from "./pages/CapsuleUploadPage/CapsuleUploadPage";
 import "./pages/CreateCapsule/CreateCapsule.css"; // Import capsule styles
-import CapsuleCarousel from "./components/CapsuleCarousel/CapsuleCarousel";
 
 const App = () => {
   return (
@@ -47,7 +52,7 @@ const AuthRoutes = () => {
       <Route path="/create-capsule" element={<CreateCapsule />} />
       <Route path="/login" element={<AuthContainer />} />
       <Route path="/signup" element={<AuthContainer />} />
-      <Route path="/cap" element={<CapsuleCarousel capsuleId={"722ebbee-062d-4188-9089-06e1de9896d2"}/>} />
+      <Route path="/capsule/:id" element={<CapsuleUploadPage />} />
     </Routes>
   );
 };

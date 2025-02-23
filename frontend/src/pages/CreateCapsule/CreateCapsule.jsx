@@ -9,8 +9,8 @@ const CreateCapsule = () => {
     capsuleName: "",
     description: "",
     unlockDate: "",
-    editors: "",
-    viewers: ""
+    editors: [],
+    viewers: []
   });
   const [isLocked, setIsLocked] = useState(false);
 
@@ -63,17 +63,18 @@ const CreateCapsule = () => {
         },
         body: JSON.stringify(formData),
       });
-    
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
     
       alert("Capsule created successfully!");
-      navigate("/dashboard");
+      navigate("/home");
     } catch (error) {
       console.error("Error saving capsule:", error);
       alert("Failed to create capsule.");
     }
+    
     
   };
 
