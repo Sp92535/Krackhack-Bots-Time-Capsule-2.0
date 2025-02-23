@@ -1,183 +1,205 @@
-.capsule-upload-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 80px 20px 40px;
-    text-align: center;
-    min-height: 100vh;
-    animation: fadeIn 1s ease;
+/* Outer Container */
+.carousel-outer-container {
+  background: linear-gradient(135deg, #f8f1ea, #e6d5c3);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Carousel Box */
+.carousel-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  border: 4px solid #d4b08a;
+  box-shadow: 0 15px 35px rgba(94, 55, 26, 0.15);
+  overflow: hidden;
+}
+
+/* Wrapper to Hide Overflow */
+.carousel-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #fff;
+}
+
+/* Slides Container */
+.carousel-content {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 65vh;
+  min-height: 550px;
+}
+
+/* Each Slide */
+.carousel-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fdf8f4;
+  padding: 30px;
+  opacity: 0.6;
+  transform: scale(0.95);
+  transition: all 0.6s ease-in-out;
+}
+
+/* Active Slide - Brighter & Larger */
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Image and Video Container */
+.media-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+  border-radius: 15px;
+}
+
+/* Media Styling */
+.carousel-image,
+.carousel-video {
+  max-width: 90%;
+  max-height: 70vh;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+/* Hover Effect for Active Slide */
+.carousel-slide.active .carousel-image,
+.carousel-slide.active .carousel-video {
+  transform: scale(1.05);
+}
+
+/* Caption Styling */
+.slide-caption {
+  width: 100%;
+  padding: 15px;
+  text-align: center;
+  color: #5e371a;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Navigation Buttons */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 107, 53, 0.85);
+  color: white;
+  border: none;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+}
+
+.carousel-button:hover {
+  background: #ff8255;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-button.prev {
+  left: 10px;
+}
+
+.carousel-button.next {
+  right: 10px;
+}
+
+/* Indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.carousel-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d4b08a;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicator:hover {
+  background: #ff8255;
+}
+
+.carousel-indicator.active {
+  background: #ff6b35;
+  transform: scale(1.4);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .carousel-content {
+    height: 60vh;
+    min-height: 500px;
   }
-  
-  .capsule-upload-container h1 {
-    font-size: 3.2rem;
-    color: #ff6b35;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    animation: fadeInUp 0.8s ease;
+
+  .carousel-button {
+    width: 45px;
+    height: 45px;
+    font-size: 28px;
   }
-  
-  /* Form Container */
-  .capsule-upload-container form {
-    background: #f8f1ea;
-    border-radius: 15px;
-    padding: 35px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    position: relative;
-    border: 4px solid #d4b08a;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    padding: 20px;
   }
-  
-  .capsule-upload-container form::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 20px;
-    background: linear-gradient(to right, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 2;
+
+  .carousel-content {
+    height: 50vh;
+    min-height: 400px;
   }
-  
-  /* Form Elements */
-  .capsule-upload-container label {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    font-size: 1.2rem;
-    color: #5e371a;
-    text-align: left;
+
+  .carousel-button {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
   }
-  
-  .capsule-upload-container input[type="text"],
-  .capsule-upload-container textarea {
-    padding: 12px;
-    border: 2px solid #d4b08a;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: white;
-    transition: border-color 0.3s ease;
+
+  .carousel-button.prev {
+    left: 5px;
   }
-  
-  .capsule-upload-container input[type="text"]::placeholder {
-    color: #999;
-    font-size: 0.9rem;
+
+  .carousel-button.next {
+    right: 5px;
   }
-  
-  .capsule-upload-container textarea {
-    min-height: 120px;
-    resize: vertical;
-  }
-  
-  .capsule-upload-container input[type="file"] {
-    padding: 10px;
-    border: 2px dashed #d4b08a;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-  }
-  
-  /* Button Container */
-  .button-container {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 30px;
-  }
-  
-  /* Buttons */
-  .capsule-upload-container button {
-    background: #ff6b35;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    max-width: 200px;
-  }
-  
-  .capsule-upload-container button:hover {
-    background: #e85a2c;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .capsule-upload-container button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  /* Lock Status */
-  .capsule-upload-container button[type="button"] {
-    background: #5e371a;
-  }
-  
-  .capsule-upload-container button[type="button"]:hover {
-    background: #4a2c15;
-  }
-  
-  /* Animations */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .capsule-upload-container {
-      padding-top: 60px;
-    }
-    
-    .capsule-upload-container h1 {
-      font-size: 2.5rem;
-    }
-    
-    .capsule-upload-container form {
-      padding: 25px;
-    }
-  
-    .button-container {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .capsule-upload-container button {
-      width: 100%;
-      max-width: 100%;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .capsule-upload-container h1 {
-      font-size: 2rem;
-    }
-    
-    .capsule-upload-container label {
-      font-size: 1.1rem;
-    }
-    
-    .capsule-upload-container button {
-      font-size: 1rem;
-      padding: 10px 20px;
-    }
-  }
+}
