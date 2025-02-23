@@ -33,4 +33,14 @@
   .nav-links a:hover {
     color: #ffcc00;
   }
+
+
+.search-bar input {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 1rem;
+  outline: none;
+}
+  
   
