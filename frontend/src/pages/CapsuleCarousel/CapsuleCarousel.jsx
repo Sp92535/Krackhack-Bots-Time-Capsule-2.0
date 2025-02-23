@@ -9,11 +9,9 @@ const CapsuleCarousel = ({ capsuleId }) => {
     const [progress, setProgress] = useState(0);
     const videoRefs = useRef([]);
 
-    // Pause inactive videos when currentIndex changes
     useEffect(() => {
         videoRefs.current.forEach((video, idx) => {
-            if (!video) return;
-            if (idx !== currentIndex) {
+            if (video && idx !== currentIndex) {
                 video.pause();
             }
         });
@@ -34,7 +32,7 @@ const CapsuleCarousel = ({ capsuleId }) => {
                 while (true) {
                     try {
                         const endIdx = buffer.indexOf("}", startIdx) + 1;
-                        if (endIdx === 0) break; // No more complete objects
+                        if (endIdx === 0) break;
 
                         const jsonStr = buffer.substring(startIdx, endIdx);
                         const parsed = JSON.parse(jsonStr);
@@ -50,7 +48,6 @@ const CapsuleCarousel = ({ capsuleId }) => {
                                 setProgress(processedFiles.size);
                             }
                         }
-
                         startIdx = endIdx;
                     } catch (err) {
                         break;
@@ -59,7 +56,6 @@ const CapsuleCarousel = ({ capsuleId }) => {
                 buffer = buffer.substring(startIdx);
             }
 
-            // Process remaining buffer if any
             if (buffer.trim()) {
                 try {
                     const parsed = JSON.parse(buffer);
@@ -91,9 +87,13 @@ const CapsuleCarousel = ({ capsuleId }) => {
                 setFiles([]);
                 setProgress(0);
 
+                const token = localStorage.getItem("token");
                 const response = await fetch(
                     `http://localhost:6969/api/capsule/open/${capsuleId}`,
-                    { signal: abortController.signal }
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        signal: abortController.signal,
+                    }
                 );
 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -102,15 +102,12 @@ const CapsuleCarousel = ({ capsuleId }) => {
                 const decoder = new TextDecoder();
 
                 await processStreamData(reader, decoder);
-                console.log("Final file list:", files);
             } catch (err) {
                 if (err.name !== "AbortError") {
                     setError(err.message || "Failed to fetch files");
                 }
             } finally {
-                if (!abortController.signal.aborted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
@@ -123,7 +120,6 @@ const CapsuleCarousel = ({ capsuleId }) => {
         };
     }, [capsuleId, processStreamData]);
 
-    // Navigation handlers and keyboard listeners remain the same
     const goToNext = useCallback(() => {
         if (files.length > 1) {
             setCurrentIndex((prev) => (prev + 1) % files.length);
@@ -131,7 +127,9 @@ const CapsuleCarousel = ({ capsuleId }) => {
     }, [files.length]);
 
     const goToPrevious = useCallback(() => {
-        setCurrentIndex((prev) => (prev - 1 + files.length) % files.length);
+        if (files.length > 0) {
+            setCurrentIndex((prev) => (prev - 1 + files.length) % files.length);
+        }
     }, [files.length]);
 
     useEffect(() => {
@@ -144,7 +142,6 @@ const CapsuleCarousel = ({ capsuleId }) => {
         return () => window.removeEventListener("keydown", handleKeyPress);
     }, [goToNext, goToPrevious]);
 
-    // Rendering remains mostly the same with added accessibility
     return (
         <div className="carousel-container">
             <div className="carousel-wrapper">
@@ -153,9 +150,8 @@ const CapsuleCarousel = ({ capsuleId }) => {
                         <div
                             key={`${file.fileName}_${index}`}
                             className={`carousel-slide ${index === currentIndex ? "active" : ""}`}
-                            style={{ border: "2px solid red", minHeight: "200px" }}
                         >
-                             <p>Slide {index + 1}</p>
+                            <p>Slide {index + 1}</p>
                             {file.contentType?.startsWith("image") ? (
                                 <img
                                     src={file.data}
@@ -169,17 +165,12 @@ const CapsuleCarousel = ({ capsuleId }) => {
                                 />
                             ) : file.contentType?.startsWith("video") ? (
                                 <video
-                                    ref={(el) => (videoRefs.current[index] = el)}
+                                    ref={(el) => {
+                                        if (el) videoRefs.current[index] = el;
+                                    }}
                                     controls
                                     className="carousel-video"
-                                    onError={(e) => {
-                                        e.target.parentElement.innerHTML =
-                                            "Failed to load video";
-                                    }}
-                                >
-                                    <source src={file.data} type={file.contentType} />
-                                    Your browser does not support the video tag.
-                                </video>
+                                />
                             ) : (
                                 <div className="unsupported-file">
                                     <p>Unsupported file type: {file.contentType}</p>
@@ -188,8 +179,6 @@ const CapsuleCarousel = ({ capsuleId }) => {
                         </div>
                     ))}
                 </div>
-
-                {/* Navigation buttons and dots remain the same */}
             </div>
         </div>
     );
