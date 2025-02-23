@@ -22,7 +22,7 @@ const Capsule = sequelize.define("Capsule", {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    canModify:{
+    canModify: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
     },
@@ -34,8 +34,8 @@ const Capsule = sequelize.define("Capsule", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    isPublic:{
-        type: DataTypes.STRING,
+    isPublic: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
     capsuleDataLink: {
