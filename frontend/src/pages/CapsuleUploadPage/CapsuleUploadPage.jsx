@@ -14,6 +14,7 @@ const CapsuleUploadPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const capsule = location.state?.capsule;
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleFileChange = (event) => {
     setFiles(Array.from(event.target.files));
@@ -24,7 +25,7 @@ const CapsuleUploadPage = () => {
       alert("Please select at least one file.");
       return;
     }
-
+    setLoading(true); // Disable buttons while uploading
     const formData = new FormData();
     files.forEach((file) => {
       formData.append("files", file);
@@ -51,12 +52,14 @@ const CapsuleUploadPage = () => {
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files");
+    } finally {
+      setLoading(false)
     }
   };
 
   const handleSaveChanges = async (event) => {
     event.preventDefault();
-
+    setLoading(true); // Disable buttons while uploading
     const newEditors = editors
       .split(',')
       .map(email => email.trim())
@@ -94,10 +97,13 @@ const CapsuleUploadPage = () => {
     } catch (error) {
       console.error("Error updating capsule:", error);
       alert("Error updating capsule");
+    } finally {
+      setLoading(false)
     }
   };
 
   const handleLock = async () => {
+    setLoading(true); // Disable buttons while uploading
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:6969/api/capsule/lock`, {
@@ -115,6 +121,8 @@ const CapsuleUploadPage = () => {
     } catch (error) {
       console.log(error);
       alert("Failed to Lock capsule.");
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -188,13 +196,13 @@ const CapsuleUploadPage = () => {
 
 
         <div className="button-container">
-          <button type="button" onClick={handleLock}>
-            {isLocked ? "Unlock Capsule" : "Lock Capsule"}
+          <button type="button" onClick={handleLock} disabled={loading}>
+            {"Lock Capsule"}
           </button>
-          <button type="button" onClick={handleUpload} disabled={isLocked}>
+          <button type="button" onClick={handleUpload} disabled={loading}>
             Upload Files
           </button>
-          <button type="submit">Save Changes</button>
+          <button type="submit" disabled={loading}>Save Changes</button>
         </div>
       </form>
     </div>

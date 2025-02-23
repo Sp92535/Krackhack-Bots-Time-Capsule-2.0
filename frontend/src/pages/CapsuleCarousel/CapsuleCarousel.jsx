@@ -71,11 +71,11 @@ const CapsuleCarousel = () => {
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     const abortController = new AbortController()
 
     const fetchFiles = async () => {
       try {
-        setLoading(true)
         setError(null)
         setFiles([])
         setProgress(0)
@@ -85,6 +85,8 @@ const CapsuleCarousel = () => {
           headers: { Authorization: `Bearer ${token}` },
           signal: abortController.signal,
         })
+
+        if (response.status == 404) throw new Error(`No files were uploaded in this capsule.: ${response.status}`)
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
 
@@ -178,7 +180,7 @@ const CapsuleCarousel = () => {
     )
   }
 
-  if (!files.length) {
+  if (!loading && !files.length) {
     return (
       <div className="carousel-outer-container">
         <div className="carousel-empty">
@@ -223,7 +225,7 @@ const CapsuleCarousel = () => {
                       className="carousel-video"
                       src={file.data}
                       loop
-                      muted
+                      autoPlay
                       playsInline
                       onError={(e) => {
                         e.target.src = "/api/placeholder/video.mp4"

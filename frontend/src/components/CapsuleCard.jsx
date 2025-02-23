@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./CapsuleCard.css";
 
-const CapsuleCard = ({ capsule, onDelete }) => {
+const CapsuleCard = ({ capsule, fetchCapsules }) => {
   const navigate = useNavigate();
 
   const utcDate = new Date(capsule.unlockDate); // Convert to Date object
@@ -19,11 +19,35 @@ const CapsuleCard = ({ capsule, onDelete }) => {
     }
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.stopPropagation(); // Prevent navigation when clicking delete
-    onDelete(capsule.id);
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:6969/api/capsule/delete-capsule",
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            capsuleId: capsule.id
+          }),
+        }
+      )
+
+      if (response.ok) {
+        fetchCapsules();
+        return;
+      }
+      const data = await response.json()
+      alert(data.message)
+    } catch (error) {
+      alert("CLIENT ERROR")
+    }
   };
-  
+
   return (
     <>
       <div
@@ -31,17 +55,17 @@ const CapsuleCard = ({ capsule, onDelete }) => {
         onClick={handleClick}
       >
         <div className="capsule-content">
-        <h2>{capsule.capsuleName}</h2>
-        <p>Description: {capsule.description}</p>
-        <p>Unlock Date: {formattedDate}</p>
-        <br/>
-        {capsule.isLocked && <p className="locked-status">🔒 Locked</p>}
-        {!capsule.isLocked && !capsule.canModify && <p className="locked-status">🔓 Ready to open</p>}
+          <h2>{capsule.capsuleName}</h2>
+          <p>Description: {capsule.description}</p>
+          <p>Unlock Date: {formattedDate}</p>
+          <br />
+          {capsule.isLocked && <p className="locked-status">🔒 Locked</p>}
+          {!capsule.isLocked && !capsule.canModify && <p className="locked-status">🔓 Ready to open</p>}
         </div>
         {/* Delete Button */}
-      <button className="delete-btn" onClick={handleDelete}>
-        🗑️ Trash
-      </button>
+        <button className="delete-btn" onClick={handleDelete}>
+          🗑️
+        </button>
       </div>
     </>
   );
