@@ -17,9 +17,12 @@ const CapsuleUploadPage = () => {
     }
 
     const formData = new FormData();
-    files.forEach((file, index) => {
-      formData.append(`files`, files); // Appending each file
+
+    // ✅ Append files correctly
+    files.forEach((file) => {
+      formData.append("files", file);
     });
+
     formData.append("capsuleId", id);
 
     try {
@@ -28,7 +31,6 @@ const CapsuleUploadPage = () => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "content-type": "multipart/form-data",
         },
         body: formData,
       });
@@ -43,6 +45,7 @@ const CapsuleUploadPage = () => {
       console.error("Error uploading files:", error);
     }
   };
+
 
   return (
     <div className="capsule-upload-container">
