@@ -32,9 +32,30 @@ const CapsuleUploadPage = () => {
     if (!formData.files.length) return alert("Please select at least one file.");
     setLoading(true);
     try {
+
       const token = localStorage.getItem("token");
       const uploadData = new FormData();
-      formData.files.forEach((file) => uploadData.append("files", file));
+
+      for (const file of formData.files) {
+        const fileType = file.type.startsWith("video") ? "video" : "image";
+  
+        // const fd = new FormData();
+        // fd.append("file", file);
+  
+        // // Step 1: Check NSFW content
+        // const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
+        //   method: "POST",
+        //   body: fd,
+        // });
+  
+        // const nsfwResult = await nsfwResponse.json();
+        // if (!nsfwResponse.ok) {
+        //   alert(nsfwResult.message || "NSFW content detected. Upload blocked.");
+        //   return;
+        // }
+  
+        uploadData.append("files", file); // Ensure all files are added properly
+      }
       uploadData.append("capsuleId", id);
 
       const response = await fetch("http://localhost:6969/api/capsule/upload", {
