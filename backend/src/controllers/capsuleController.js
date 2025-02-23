@@ -123,7 +123,7 @@ export const getUserCapsules = async (req, res) => {
 
 export const uploadCapsuleData = async (req, res) => {
     try {
-        if (!req.files || req.files.length === 0) {
+        if (!req.files || req.files.length === 0) {            
             return res.status(400).json({ message: "No files uploaded" });
         }
 
