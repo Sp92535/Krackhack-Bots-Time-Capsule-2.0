@@ -25,7 +25,7 @@ processor = ViTImageProcessor.from_pretrained("Falconsai/nsfw_image_detection")
 search_model = SentenceTransformer("SeyedAli/Multilingual-Text-Semantic-Search-Siamese-BERT-V1")
 
 # API URL for Capsules
-CAPSULES_API_URL = "http://localhost:6969/api/capsule/all-capsules"
+CAPSULES_API_URL = "https://krackhack-bots-time-capsule-2-0.onrender.com/api/capsule/all-capsules"
 
 # Global Storage for Capsules & FAISS Index
 capsules = []
