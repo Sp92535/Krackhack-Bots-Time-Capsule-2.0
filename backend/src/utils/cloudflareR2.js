@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 import { User, Capsule } from "../models/index.js";
 
@@ -89,5 +89,33 @@ export const streamCapsuleFiles = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Error fetching files" });
+    }
+};
+
+export const deleteFromCloud = async (capsuleId) => {
+    try {
+        const folderPath = `${capsuleId}/files/`;
+
+        // List all files in the folder
+        const listParams = { Bucket: process.env.R2_BUCKET_NAME, Prefix: folderPath };
+        const { Contents } = await s3.send(new ListObjectsV2Command(listParams));
+
+        if (!Contents || Contents.length === 0) {
+            console.log("No files found in cloud for capsule:", capsuleId);
+            return;
+        }
+
+        // Prepare delete request
+        const deleteParams = {
+            Bucket: process.env.R2_BUCKET_NAME,
+            Delete: { Objects: Contents.map((file) => ({ Key: file.Key })) },
+        };
+
+        // Execute deletion
+        await s3.send(new DeleteObjectsCommand(deleteParams));
+        console.log(`All files for capsule ${capsuleId} deleted from cloud.`);
+    } catch (error) {
+        console.error("Error deleting files from cloud:", error);
+        throw error;
     }
 };
