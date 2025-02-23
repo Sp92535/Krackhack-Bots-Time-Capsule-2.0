@@ -34,6 +34,10 @@ const Capsule = sequelize.define("Capsule", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    isPublic:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     capsuleDataLink: {
         type: DataTypes.STRING,
         allowNull: false, // Cloud flare storage link

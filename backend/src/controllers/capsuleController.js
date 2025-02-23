@@ -5,7 +5,7 @@ import { User, Capsule } from "../models/index.js";
 
 export const createCapsule = async (req, res) => {
     try {
-        const { capsuleName, description, editors = [], viewers = [], unlockDate } = req.body;
+        const { capsuleName, description, editors = [], viewers = [], unlockDate, isPublic } = req.body;
         const ownerId = req.user.id;
         const decodeKey = crypto.randomBytes(32).toString("hex");
 
@@ -23,12 +23,13 @@ export const createCapsule = async (req, res) => {
             ownerId,
             unlockDate,
             decodeKey,
+            isPublic,
             capsuleDataLink,
         });
 
         // Associate Editors & Viewers using many-to-many relationships
-        if (editorUsers.length) await capsule.addEditors(editorUsers);
-        if (viewerUsers.length) await capsule.addViewers(viewerUsers);
+        if (!isPublic && editorUsers.length) await capsule.addEditors(editorUsers);
+        if (!isPublic && viewerUsers.length) await capsule.addViewers(viewerUsers);
 
         res.status(201).json({ message: "Capsule created successfully", capsuleId: capsule.id });
     } catch (err) {
@@ -88,7 +89,7 @@ export const getUserCapsules = async (req, res) => {
         const userId = req.user.id;
 
         const capsules = await Capsule.findAll({
-            attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate"], // Select only required fields
+            attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate", "isPublic"], // Select only required fields
             include: [
                 {
                     model: User,
@@ -127,8 +128,7 @@ export const uploadCapsuleData = async (req, res) => {
         }
 
         const { capsuleId } = req.body;
-
-        const userId = req.user.id; // Current user
+        const userId = req.user.id;
 
         const capsule = await Capsule.findByPk(capsuleId, {
             include: [{ model: User, as: "Editors", attributes: ["id"] }],
@@ -136,17 +136,27 @@ export const uploadCapsuleData = async (req, res) => {
 
         if (!capsule) return res.status(404).json({ message: "Capsule not found" });
 
-        // Check if user is the Owner or an Editor
         const isOwner = capsule.ownerId === userId;
         const isEditor = capsule.Editors.some((editor) => editor.id === userId);
+        const isPublic = capsule.isPublic;
 
-        if (!isOwner && !isEditor) {
+        if (!isOwner && !isEditor && !isPublic) {
             return res.status(403).json({ message: "Not authorized to upload files" });
         }
 
-        const ownerId = capsule.ownerId;
         const fileUrls = await uploadFilesToR2(req.files, capsuleId);
         const folderUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${capsuleId}/files/`;
+
+        if (isPublic) {
+            // Check if user is already a viewer
+            const existingViewers = await capsule.getViewers({ attributes: ["id"] });
+            const viewerIds = existingViewers.map((viewer) => viewer.id);
+
+            if (!viewerIds.includes(userId)) {
+                const user = await User.findByPk(userId);
+                if (user) await capsule.addViewer(user);
+            }
+        }
 
         capsule.capsuleDataLink = folderUrl;
         await capsule.save();
@@ -199,6 +209,21 @@ export const deleteCapsule = async (req, res) => {
         await capsule.destroy();
 
         res.status(200).json({ message: "Capsule deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getAllPublicCapsules = async (req, res) => {
+    try {
+
+        const publicCapsules = await Capsule.findAll({
+            attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate", "isPublic"],
+            where: { isPublic: true }, // Fetch only public capsules
+        });
+
+        res.status(200).json({ capsules: publicCapsules });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
