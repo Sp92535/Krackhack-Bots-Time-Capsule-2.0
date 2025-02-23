@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import crypto from "crypto";
-import { uploadFilesToR2 } from "../utils/cloudflareR2.js";
+import { deleteFromCloud, uploadFilesToR2 } from "../utils/cloudflareR2.js";
 import { User, Capsule } from "../models/index.js";
 
 export const createCapsule = async (req, res) => {
@@ -86,7 +86,7 @@ export const updateCapsule = async (req, res) => {
 export const getUserCapsules = async (req, res) => {
     try {
         const userId = req.user.id;
-        
+
         const capsules = await Capsule.findAll({
             attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate"], // Select only required fields
             include: [
@@ -111,7 +111,7 @@ export const getUserCapsules = async (req, res) => {
                 ],
             },
         });
-        
+
         res.status(200).json({ capsules });
     } catch (err) {
         console.error(err);
@@ -170,11 +170,6 @@ export const lockCapsule = async (req, res) => {
 
         if (capsule.ownerId !== ownerId) return res.status(403).json({ message: "Not authorized" });
 
-        // Lock the capsule if unlockDate is in the future
-        console.log("Unlock Date:", new Date(capsule.unlockDate).toISOString());
-        console.log("Current Date:", new Date().toISOString());
-
-
         if (new Date(capsule.unlockDate).getTime() > Date.now()) {
             capsule.isLocked = true;
             capsule.canModify = false;
@@ -183,6 +178,27 @@ export const lockCapsule = async (req, res) => {
         } else {
             res.status(400).json({ message: "Unlock date has already passed" });
         }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const deleteCapsule = async (req, res) => {
+    try {
+        const { capsuleId } = req.body;
+        const ownerId = req.user.id;
+
+        const capsule = await Capsule.findByPk(capsuleId);
+        if (!capsule) return res.status(404).json({ message: "Capsule not found" });
+        if (capsule.ownerId !== ownerId) return res.status(403).json({ message: "Not authorized" });
+
+        if (capsule.capsuleDataLink) {
+            await deleteFromCloud(capsuleId);
+        }
+        await capsule.destroy();
+
+        res.status(200).json({ message: "Capsule deleted successfully" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
