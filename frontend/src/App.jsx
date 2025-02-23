@@ -10,6 +10,7 @@ import AuthContainer from "./components/AuthContainer/AuthContainer";
 import CreateCapsule from "./pages/CreateCapsule/CreateCapsule"; // Import CreateCapsule
 import "./index.css"; // Global styles
 import "./pages/CreateCapsule/CreateCapsule.css"; // Import capsule styles
+import CapsuleCarousel from "./components/CapsuleCarousel/CapsuleCarousel";
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const AuthRoutes = () => {
       <Route path="/create-capsule" element={<CreateCapsule />} />
       <Route path="/login" element={<AuthContainer />} />
       <Route path="/signup" element={<AuthContainer />} />
+      <Route path="/cap" element={<CapsuleCarousel capsuleId={"722ebbee-062d-4188-9089-06e1de9896d2"}/>} />
     </Routes>
   );
 };
