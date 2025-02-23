@@ -1,0 +1,10 @@
+flask
+flask-cors
+torch
+transformers
+Pillow
+numpy
+requests
+faiss-cpu
+sentence-transformers
+opencv-python-headless
