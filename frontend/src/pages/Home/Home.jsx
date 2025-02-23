@@ -9,12 +9,12 @@ const Home = () => {
   const [capsules, setCapsules] = useState([]);
   const navigate = useNavigate(); // Initialize navigate
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("expiryTime");
-    toast.success("Logged out successfully.");
-    navigate("/login"); // Navigate after logout
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("expiryTime");
+  //   alert("Logged out successfully.");
+  //   navigate("/login"); // Navigate after logout
+  // };
   const fetchCapsules = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -35,7 +35,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <button onClick={handleLogout}>Logout</button>
+      {/* <button onClick={handleLogout}>Logout</button> */}
 
       <div className="dashboard-container">
         <h1>Your Capsules</h1>

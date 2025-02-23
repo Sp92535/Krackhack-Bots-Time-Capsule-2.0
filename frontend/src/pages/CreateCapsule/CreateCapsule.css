@@ -138,6 +138,16 @@ button[type="submit"]:hover {
   box-shadow: 0 6px 20px rgba(94, 55, 26, 0.3);
 }
 
+.checkbox {
+  margin-left: 0;
+  vertical-align: middle;
+}
+.checkbox-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

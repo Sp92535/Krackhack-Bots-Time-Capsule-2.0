@@ -9,13 +9,23 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      navigate(`/search?query=${query.trim()}`); // Update URL
+      navigate(`/search?query=${query.trim()}`);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expiryTime");
+    alert("Logged out successfully.");
+    navigate("/login");
   };
 
   return (
     <nav className="navbar">
-      <h1 className="logo">Time Capsule</h1>
+      <h1 className="logo">
+        TimelessTreasures 
+        <img src="Time Capsule free icons designed by Freepik.jpeg" alt="Logo Icon" className="logo-img" />
+      </h1>
       <ul className="nav-links">
         <li className="search-bar">
           <form onSubmit={handleSearch}>
@@ -30,6 +40,9 @@ const Navbar = () => {
         </li>
         <li><Link to="/explore">Explore</Link></li>
         <li><Link to="/home">Dashboard</Link></li>
+        <li>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </li>
       </ul>
     </nav>
   );
