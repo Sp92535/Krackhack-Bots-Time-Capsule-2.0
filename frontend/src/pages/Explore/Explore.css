@@ -3,7 +3,7 @@
 .explore-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 20px 40px;
+  padding: 10px 20px 40px;
   text-align: center;
   min-height: 100vh;
 }
@@ -15,6 +15,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 0.8s ease;
 }
+
 
 .explore-container p {
   font-size: 1.3rem;
@@ -29,7 +30,7 @@
 .capsules-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 35px;
+  gap: 20px;
   padding: 20px;
 }
 

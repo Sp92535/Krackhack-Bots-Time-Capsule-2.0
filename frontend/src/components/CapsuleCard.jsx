@@ -5,10 +5,15 @@ import "./CapsuleCard.css";
 const CapsuleCard = ({ capsule, fetchCapsules }) => {
   const navigate = useNavigate();
 
-  const utcDate = new Date(capsule.unlockDate); // Convert to Date object
-  const formattedDate = utcDate.toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata" // Adjust to Indian Standard Time (IST)
-  });
+  // Safely compute the formatted date
+  let formattedDate = "N/A";
+  if (capsule && capsule.unlockDate) {
+    const utcDate = new Date(capsule.unlockDate); // Convert to Date object
+    formattedDate = utcDate.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata" // Adjust to Indian Standard Time (IST)
+    });
+  }
+
   const handleClick = () => {
     if (!capsule.isLocked && !capsule.canModify) {
       navigate(`/capsule/view/${capsule.id}`, { state: { capsule } });
@@ -24,27 +29,25 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:6969/api/capsule/delete-capsule",
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            capsuleId: capsule.id
-          }),
-        }
-      )
+      const response = await fetch("http://localhost:6969/api/capsule/delete-capsule", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          capsuleId: capsule.id
+        }),
+      });
 
       if (response.ok) {
         fetchCapsules();
         return;
       }
-      const data = await response.json()
-      alert(data.message)
+      const data = await response.json();
+      alert(data.message);
     } catch (error) {
-      alert("CLIENT ERROR")
+      alert("CLIENT ERROR");
     }
   };
 
@@ -64,7 +67,7 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
         </div>
         {/* Delete Button */}
         <button className="delete-btn" onClick={handleDelete}>
-          🗑️
+          Delete
         </button>
       </div>
     </>

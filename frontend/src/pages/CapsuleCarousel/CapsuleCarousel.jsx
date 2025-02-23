@@ -205,7 +205,10 @@ const CapsuleCarousel = () => {
     );
   }
 
-  return (
+  return (<>
+
+<button type="button" onClick={handleGoBack}>Back</button>
+
     <div className="carousel-outer-container">
       <div className="carousel-container">
         <div className="carousel-wrapper" ref={carouselRef}>
@@ -276,6 +279,7 @@ const CapsuleCarousel = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

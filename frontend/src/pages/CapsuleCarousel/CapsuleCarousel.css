@@ -1,4 +1,3 @@
-/* Outer Container */
 .carousel-outer-container {
   background: linear-gradient(135deg, #f8f1ea, #e6d5c3);
   min-height: 100vh;
@@ -8,9 +7,9 @@
   justify-content: center;
 }
 
-/* Carousel Box */
+/* Carousel Box - Increased Size */
 .carousel-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased from 1200px */
   width: 100%;
   margin: 0 auto;
   padding: 40px;
@@ -30,12 +29,12 @@
   background: #fff;
 }
 
-/* Slides Container */
+/* Slides Container - Increased Height */
 .carousel-content {
   display: flex;
   transition: transform 0.5s ease-in-out;
-  height: 65vh;
-  min-height: 550px;
+  height: 75vh; /* Increased from 65vh */
+  min-height: 650px; /* Increased from 550px */
 }
 
 /* Each Slide */
@@ -54,7 +53,7 @@
   transition: all 0.6s ease-in-out;
 }
 
-/* Active Slide - Brighter & Larger */
+/* Active Slide */
 .carousel-slide.active {
   opacity: 1;
   transform: scale(1);
@@ -72,22 +71,16 @@
   border-radius: 15px;
 }
 
-/* Media Styling */
+/* Updated Media Styling for Consistent Sizing */
 .carousel-image,
 .carousel-video {
-  max-width: 90%;
-  max-height: 70vh;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Changed from cover to contain */
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.4s ease;
   display: block;
-}
-
-/* Hover Effect for Active Slide */
-.carousel-slide.active .carousel-image,
-.carousel-slide.active .carousel-video {
-  transform: scale(1.05);
 }
 
 /* Caption Styling */
@@ -134,11 +127,11 @@
   right: 10px;
 }
 
-/* Indicators */
+/* Updated Indicators */
 .carousel-indicators {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px; /* Reduced from 10px */
   margin-top: 20px;
   position: absolute;
   bottom: 15px;
@@ -147,8 +140,8 @@
 }
 
 .carousel-indicator {
-  width: 14px;
-  height: 14px;
+  width: 8px; /* Reduced from 14px */
+  height: 8px; /* Reduced from 14px */
   border-radius: 50%;
   background: #d4b08a;
   border: none;
@@ -162,16 +155,15 @@
 
 .carousel-indicator.active {
   background: #ff6b35;
-  transform: scale(1.4);
+  transform: scale(1.3); /* Reduced from 1.4 */
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .carousel-content {
-    height: 60vh;
-    min-height: 500px;
+    height: 65vh;
+    min-height: 550px;
   }
-
   .carousel-button {
     width: 45px;
     height: 45px;
@@ -183,22 +175,18 @@
   .carousel-container {
     padding: 20px;
   }
-
   .carousel-content {
-    height: 50vh;
-    min-height: 400px;
+    height: 55vh;
+    min-height: 450px;
   }
-
   .carousel-button {
     width: 40px;
     height: 40px;
     font-size: 24px;
   }
-
   .carousel-button.prev {
     left: 5px;
   }
-
   .carousel-button.next {
     right: 5px;
   }
