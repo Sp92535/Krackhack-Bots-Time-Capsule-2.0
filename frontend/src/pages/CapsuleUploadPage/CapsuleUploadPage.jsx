@@ -62,7 +62,7 @@ const CapsuleUploadPage = () => {
       }
       uploadData.append("capsuleId", id);
 
-      const response = await fetch("http://localhost:6969/api/capsule/upload", {
+      const response = await fetch(`${config.apiUrl}/capsule/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: uploadData,

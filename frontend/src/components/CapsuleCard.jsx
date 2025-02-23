@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./CapsuleCard.css";
 import { toast } from "react-toastify";
+import config from "../config";
 
 const CapsuleCard = ({ capsule, fetchCapsules }) => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:6969/api/capsule/delete-capsule", {
+      const response = await fetch(`${config.apiUrl}/capsule/delete-capsule`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 
 import { useLocation, useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 import "./CapsuleCarousel.css";
+import config from "../../config";
 
 const CapsuleCarousel = () => {
   const navigate = useNavigate(); // ✅ Initialize navigate
@@ -82,27 +83,30 @@ const CapsuleCarousel = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true)
-    const abortController = new AbortController()
+    setLoading(true);
+    const abortController = new AbortController();
 
     const fetchFiles = async () => {
       try {
-        setError(null)
-        setFiles([])
-        setProgress(0)
+        setError(null);
+        setFiles([]);
+        setProgress(0);
 
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `http://localhost:6969/api/capsule/open/${capsuleId}`,
+        const response = await fetch(`${config.apiUrl}/capsule/open/${capsuleId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
             signal: abortController.signal,
           }
         );
 
-        if (response.status == 404) throw new Error(`No files were uploaded in this capsule.: ${response.status}`)
+        if (response.status == 404)
+          throw new Error(
+            `No files were uploaded in this capsule.: ${response.status}`
+          );
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -205,82 +209,91 @@ const CapsuleCarousel = () => {
     );
   }
 
-  return (<>
+  return (
+    <>
+      <button type="button" onClick={handleGoBack}>
+        Back
+      </button>
 
-<button type="button" onClick={handleGoBack}>Back</button>
-
-    <div className="carousel-outer-container">
-      <div className="carousel-container">
-        <div className="carousel-wrapper" ref={carouselRef}>
-          <button className="carousel-button prev" onClick={goToPrevious}>
-            <span>‹</span>
-          </button>
-          <div className="carousel-content" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-            {files.map((file, index) => (
-              <div
-                key={`${file.fileName}_${index}`}
-                className={`carousel-slide ${index === currentIndex ? "active" : ""}`}
-              >
-                <div className="media-wrapper">
-                  {file.contentType?.startsWith("image") ? (
-                    <img
-                      src={file.data || "/placeholder.svg"}
-                      alt={file.fileName || `Image ${index + 1}`}
-                      className="carousel-image"
-                      loading="lazy"
-                      onError={(e) => {
-                        e.target.src = "/api/placeholder/400/300"
-                        e.target.alt = "Failed to load image"
-                      }}
-                    />
-                  ) : file.contentType?.startsWith("video") ? (
-                    <video
-                      ref={(el) => {
-                        if (el) videoRefs.current[index] = el
-                      }}
-                      controls
-                      className="carousel-video"
-                      src={file.data}
-                      loop
-                      autoPlay
-                      playsInline
-                      onError={(e) => {
-                        e.target.src = "/api/placeholder/video.mp4"
-                      }}
-                    />
-                  ) : (
-                    <div className="unsupported-file">
-                      <p>Unsupported file type: {file.contentType}</p>
-                    </div>
-                  )}
+      <div className="carousel-outer-container">
+        <div className="carousel-container">
+          <div className="carousel-wrapper" ref={carouselRef}>
+            <button className="carousel-button prev" onClick={goToPrevious}>
+              <span>‹</span>
+            </button>
+            <div
+              className="carousel-content"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {files.map((file, index) => (
+                <div
+                  key={`${file.fileName}_${index}`}
+                  className={`carousel-slide ${
+                    index === currentIndex ? "active" : ""
+                  }`}
+                >
+                  <div className="media-wrapper">
+                    {file.contentType?.startsWith("image") ? (
+                      <img
+                        src={file.data || "/placeholder.svg"}
+                        alt={file.fileName || `Image ${index + 1}`}
+                        className="carousel-image"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.src = "/api/placeholder/400/300";
+                          e.target.alt = "Failed to load image";
+                        }}
+                      />
+                    ) : file.contentType?.startsWith("video") ? (
+                      <video
+                        ref={(el) => {
+                          if (el) videoRefs.current[index] = el;
+                        }}
+                        controls
+                        className="carousel-video"
+                        src={file.data}
+                        loop
+                        autoPlay
+                        playsInline
+                        onError={(e) => {
+                          e.target.src = "/api/placeholder/video.mp4";
+                        }}
+                      />
+                    ) : (
+                      <div className="unsupported-file">
+                        <p>Unsupported file type: {file.contentType}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="slide-caption">
+                    <h3>{file.fileName}</h3>
+                    <p className="file-counter">
+                      {index + 1} of {files.length}
+                    </p>
+                  </div>
                 </div>
-                <div className="slide-caption">
-                  <h3>{file.fileName}</h3>
-                  <p className="file-counter">
-                    {index + 1} of {files.length}
-                  </p>
-                </div>
-              </div>
+              ))}
+            </div>
+            <button className="carousel-button next" onClick={goToNext}>
+              <span>›</span>
+            </button>
+          </div>
+          <div className="carousel-indicators">
+            {files.map((_, index) => (
+              <button
+                key={index}
+                className={`carousel-indicator ${
+                  index === currentIndex ? "active" : ""
+                }`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
             ))}
           </div>
-          <button className="carousel-button next" onClick={goToNext}>
-            <span>›</span>
-          </button>
-        </div>
-        <div className="carousel-indicators">
-          {files.map((_, index) => (
-            <button
-              key={index}
-              className={`carousel-indicator ${index === currentIndex ? "active" : ""}`}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
         </div>
       </div>
-    </div>
     </>
-  )
-}
+  );
+};
 
 export default CapsuleCarousel;
