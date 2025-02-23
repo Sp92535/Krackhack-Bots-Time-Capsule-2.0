@@ -14,11 +14,15 @@ const Explore = () => {
   useEffect(() => {
     const fetchAllCapsules = async () => {
       try {
-        const response = await axios.get("http://localhost:6969/api/capsule/all-capsules");
-        // If the response is directly an array, use it; otherwise, check if it's nested under a property.\n
-        setAllCapsules(Array.isArray(response.data) ? response.data : response.data.capsules || []);
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:6969/api/capsule/all-capsules", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+
+        setAllCapsules(data.capsules);
       } catch (error) {
-        console.error("Error fetching all capsules:", error);
+        console.error("Error fetching capsules:", error);
       }
     };
 
@@ -51,10 +55,7 @@ const Explore = () => {
           {myCapsules.map((capsule) => (
             <CapsuleCard
               key={capsule.id}
-              title={capsule.title}
-              creator={capsule.creator}
-              openDate={capsule.openDate}
-              isLocked={capsule.isLocked}
+              capsule={capsule}
             />
           ))}
         </div>
@@ -65,10 +66,7 @@ const Explore = () => {
             {allCapsules.map((capsule) => (
               <CapsuleCard
                 key={capsule.id}
-                title={capsule.title}
-                creator={capsule.creator}
-                openDate={capsule.openDate}
-                isLocked={capsule.isLocked}
+                capsule={capsule}
               />
             ))}
           </div>

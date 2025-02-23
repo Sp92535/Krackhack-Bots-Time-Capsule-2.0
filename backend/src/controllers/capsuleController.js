@@ -222,7 +222,7 @@ export const getAllPublicCapsules = async (req, res) => {
             attributes: ["id", "capsuleName", "description", "isLocked", "canModify", "unlockDate", "isPublic"],
             where: { isPublic: true }, // Fetch only public capsules
         });
-
+        
         res.status(200).json({ capsules: publicCapsules });
     } catch (err) {
         console.error(err);

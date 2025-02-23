@@ -1,9 +1,10 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./CapsuleCard.css";
 
 const CapsuleCard = ({ capsule, fetchCapsules }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Safely compute the formatted date
   let formattedDate = "N/A";
@@ -51,6 +52,16 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
     }
   };
 
+  useEffect(() => {
+    console.log(capsule);
+  }
+    , [])
+
+  if (!capsule) return (
+    <>
+      UNDEF
+    </>
+  )
   return (
     <>
       <div
@@ -66,9 +77,10 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
           {!capsule.isLocked && !capsule.canModify && <p className="locked-status">🔓 Ready to open</p>}
         </div>
         {/* Delete Button */}
+        {location.pathname != "/explore" && 
         <button className="delete-btn" onClick={handleDelete}>
           Delete
-        </button>
+        </button>}
       </div>
     </>
   );

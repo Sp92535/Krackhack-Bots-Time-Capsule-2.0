@@ -39,20 +39,20 @@ const CapsuleUploadPage = () => {
       for (const file of formData.files) {
         const fileType = file.type.startsWith("video") ? "video" : "image";
   
-        // const fd = new FormData();
-        // fd.append("file", file);
+        const fd = new FormData();
+        fd.append("file", file);
   
-        // // Step 1: Check NSFW content
-        // const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
-        //   method: "POST",
-        //   body: fd,
-        // });
+        // Step 1: Check NSFW content
+        const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
+          method: "POST",
+          body: fd,
+        });
   
-        // const nsfwResult = await nsfwResponse.json();
-        // if (!nsfwResponse.ok) {
-        //   alert(nsfwResult.message || "NSFW content detected. Upload blocked.");
-        //   return;
-        // }
+        const nsfwResult = await nsfwResponse.json();
+        if (!nsfwResponse.ok) {
+          alert(nsfwResult.message || "NSFW content detected. Upload blocked.");
+          return;
+        }
   
         uploadData.append("files", file); // Ensure all files are added properly
       }
@@ -108,7 +108,7 @@ const CapsuleUploadPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:6969/api/capsule/lock", {
+      const res = await fetch("http://localhost:6969/api/capsule/lock", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -116,8 +116,12 @@ const CapsuleUploadPage = () => {
         },
         body: JSON.stringify({ capsuleId: id }),
       });
-      alert("LOCKED");
-      navigate("/home");
+      if(res.ok){
+        alert("LOCKED");
+        navigate("/home");
+      }
+      else throw new Error(res.message);
+
     } catch (error) {
       alert("Failed to Lock capsule.");
     } finally {

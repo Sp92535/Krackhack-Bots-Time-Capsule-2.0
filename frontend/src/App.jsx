@@ -17,6 +17,7 @@ import "./index.css"; // Global styles
 import CapsuleUploadPage from "./pages/CapsuleUploadPage/CapsuleUploadPage";
 import "./pages/CreateCapsule/CreateCapsule.css"; // Import capsule styles
 import CapsuleCarousel from "./pages/CapsuleCarousel/CapsuleCarousel";
+import SearchResults from "./pages/SearchResults/SearchResults";
 
 const App = () => {
   return (
@@ -54,7 +55,8 @@ const AuthRoutes = () => {
       <Route path="/login" element={<AuthContainer />} />
       <Route path="/signup" element={<AuthContainer />} />
       <Route path="/capsule/:id" element={<CapsuleUploadPage />} />
-      <Route path="/capsule/view/:id" element={<CapsuleCarousel/>} />
+      <Route path="/capsule/view/:id" element={<CapsuleCarousel />} />
+      <Route path="/search" element={<SearchResults />} />
     </Routes>
   );
 };
