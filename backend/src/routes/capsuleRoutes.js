@@ -12,8 +12,8 @@ const router = express.Router();
 router.post("/create-capsule", protect, createCapsule);
 router.put("/update-capsule", protect, updateCapsule);
 router.get("/my-capsules", protect, getUserCapsules);
-router.post("/upload", upload.array("files"), protect, uploadCapsuleData);
+router.post("/upload", protect, upload.array("files"), uploadCapsuleData);
 router.put("/lock", protect, lockCapsule)
-router.get("/open/:capsuleId",streamCapsuleFiles);
+router.get("/open/:capsuleId", streamCapsuleFiles);
 
 export default router
