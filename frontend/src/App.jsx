@@ -5,23 +5,23 @@ import {
   Route,
   useNavigate,
 } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 import Explore from "./pages/Explore/Explore";
 import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login";
-import Signup from "./pages/SignUp/Signup";
 import AuthContainer from "./components/AuthContainer/AuthContainer";
+import SearchResults from "./pages/SearchResults/SearchResults";
 import CreateCapsule from "./pages/CreateCapsule/CreateCapsule"; // Import CreateCapsule
 import "./index.css"; // Global styles
 import CapsuleUploadPage from "./pages/CapsuleUploadPage/CapsuleUploadPage";
 import "./pages/CreateCapsule/CreateCapsule.css"; // Import capsule styles
 import CapsuleCarousel from "./pages/CapsuleCarousel/CapsuleCarousel";
-import SearchResults from "./pages/SearchResults/SearchResults";
 
 const App = () => {
   return (
     <Router>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       {/* <Navbar /> */}
       <AuthRoutes />
     </Router>
@@ -40,7 +40,7 @@ const AuthRoutes = () => {
       if (currentTime > expiryTime) {
         localStorage.removeItem("token");
         localStorage.removeItem("expiryTime");
-        alert("Session expired. Please log in again.");
+        toast.success("Session expired. Please log in again.");
         navigate("/login");
       }
     }

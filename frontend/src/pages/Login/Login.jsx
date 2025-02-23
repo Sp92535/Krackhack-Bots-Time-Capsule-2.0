@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Login.css"; // Import the updated Login.css
 
 const Login = ({ switchToSignup }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: "", // Change username to email
+    email: "",
     password: "",
   });
   const [error, setError] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -22,8 +24,8 @@ const Login = ({ switchToSignup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Replace mock login with API call to backend
     try {
+      setLoading(true)      
       const response = await fetch("http://localhost:6969/api/auth/login", {
         method: "POST",
         headers: {
@@ -38,19 +40,22 @@ const Login = ({ switchToSignup }) => {
       console.log(data);
 
       if (response.ok) {
-        // Assuming your backend returns a token and expiry time
         const { token, expiryTime } = data;
         localStorage.setItem("token", token);
         localStorage.setItem("expiryTime", expiryTime);
 
-        alert("Login successful!");
+        toast.success("Login successful!");
         navigate("/explore"); // Redirect to home page after successful login
       } else {
         setError(data.message || "Invalid email or password");
+        toast.error(data.message || "Invalid email or password");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -64,7 +69,7 @@ const Login = ({ switchToSignup }) => {
             <label>Email</label>
             <input
               type="email"
-              name="email" // Now uses email
+              name="email"
               value={formData.email}
               onChange={handleChange}
               required

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { toast } from "react-toastify";
 import "./Explore.css";
 import Navbar from "../../components/Navbar";
 import CapsuleCard from "../../components/CapsuleCard";
@@ -36,7 +36,7 @@ const Explore = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryTime");
-    alert("Logged out successfully.");
+    toast.success("Logged out successfully.");
     navigate("/login");
   };
 

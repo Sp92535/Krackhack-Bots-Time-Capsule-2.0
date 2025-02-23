@@ -20,3 +20,18 @@ export const sendVerificationEmail = async (email, token) => {
 
     await transporter.sendMail(mailOptions);
 };
+export const sendUnlockNotification = async (email, capsuleTitle) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Your Time Capsule is Now Open!",
+        text: `A new capsule, "${capsuleTitle}", is now unlocked on Timeless Treasures. Check it out!`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Notification sent to ${email}`);
+    } catch (error) {
+        console.error(`Error sending email to ${email}:`, error);
+    }
+};

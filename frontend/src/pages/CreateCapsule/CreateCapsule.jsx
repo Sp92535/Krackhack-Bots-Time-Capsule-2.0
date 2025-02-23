@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { toast } from "react-toastify";
 import "./CreateCapsule.css";
 
 const CreateCapsule = () => {
@@ -30,7 +30,7 @@ const CreateCapsule = () => {
     e.preventDefault();
 
     if (!formData.capsuleName.trim()) {
-      alert("Please enter a capsule name!");
+      toast.success("Please enter a capsule name!");
       return;
     }
 
@@ -52,11 +52,11 @@ const CreateCapsule = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      alert("Capsule created successfully!");
+      toast.success("Capsule created successfully!");
       navigate("/home");
     } catch (error) {
       console.error("Error saving capsule:", error);
-      alert("Failed to create capsule.");
+      toast.error("Failed to create capsule.");
     }
 
 

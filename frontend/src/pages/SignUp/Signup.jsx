@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Signup.css";
 
 const Signup = ({ switchToLogin }) => {
@@ -9,6 +11,7 @@ const Signup = ({ switchToLogin }) => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null);
   const [isPasswordValid, setIsPasswordValid] = useState(true); // Track password validity
 
@@ -38,6 +41,7 @@ const Signup = ({ switchToLogin }) => {
     setIsPasswordValid(true);
 
     try {
+      setLoading(true)
       const response = await fetch("http://localhost:6969/api/auth/register", {
         method: "POST",
         headers: {
@@ -52,20 +56,24 @@ const Signup = ({ switchToLogin }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // Show success message and alert
-        alert("Verification email sent. Please check your inbox!");
+        // Show success message with toast
+        toast.success("Verification email sent. Please check your inbox!");
 
         // Redirect to login page after a short delay
         setTimeout(() => {
-          navigate("/login"); // This will navigate to the login page
+          navigate("/login"); // Navigate to login page
         }, 2000); // 2-second delay before redirecting
       } else {
         // Show error from backend if registration fails
         setError(data.message || "An error occurred during registration. Please try again.");
+        toast.error(data.message || "An error occurred during registration. Please try again.");
       }
     } catch (error) {
       console.error(error);
       setError("An error occurred while connecting to the server. Please try again.");
+      toast.error("An error occurred while connecting to the server. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,7 +111,7 @@ const Signup = ({ switchToLogin }) => {
               </div>
             )}
           </div>
-          <button type="submit" className="signup-btn">
+          <button type="submit" className="signup-btn" disabled={loading}>
             Sign Up
           </button>
         </form>

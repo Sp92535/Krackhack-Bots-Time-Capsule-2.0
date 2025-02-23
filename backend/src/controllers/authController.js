@@ -19,9 +19,9 @@ export const register = async (req, res) => {
         const verificationToken = uuidv4(); // Generate unique token
         
         
-        user = await User.create({ email, password: hashedPassword, verificationToken, isVerified:true /*Testing only*/ });
+        user = await User.create({ email, password: hashedPassword, verificationToken});
 
-        // await sendVerificationEmail(email, verificationToken);
+        await sendVerificationEmail(email, verificationToken);
 
         res.json({ message: "Verification email sent. Please check your inbox." });
     } catch (err) {

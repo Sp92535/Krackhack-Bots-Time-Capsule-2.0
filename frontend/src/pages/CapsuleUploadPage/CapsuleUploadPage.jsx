@@ -1,5 +1,6 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import "./CapsuleUploadPage.css";
 
 const CapsuleUploadPage = () => {
@@ -29,7 +30,7 @@ const CapsuleUploadPage = () => {
   };
 
   const handleUpload = async () => {
-    if (!formData.files.length) return alert("Please select at least one file.");
+    if (!formData.files.length) return toast.error("Please select at least one file.");
     setLoading(true);
     try {
 
@@ -37,23 +38,25 @@ const CapsuleUploadPage = () => {
       const uploadData = new FormData();
 
       for (const file of formData.files) {
-        const fileType = file.type.startsWith("video") ? "video" : "image";
-  
+        const fileType = file.type.startsWith("video") ? "video" : file.type.startsWith("image") ? "image" : "";
+
         const fd = new FormData();
         fd.append("file", file);
-  
+
         // Step 1: Check NSFW content
-        const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
-          method: "POST",
-          body: fd,
-        });
-  
-        const nsfwResult = await nsfwResponse.json();
-        if (!nsfwResponse.ok) {
-          alert(nsfwResult.message || "NSFW content detected. Upload blocked.");
-          return;
+        if (fileType) {
+          const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
+            method: "POST",
+            body: fd,
+          });
+
+          const nsfwResult = await nsfwResponse.json();
+          if (!nsfwResponse.ok) {
+            toast.error(nsfwResult.message || "NSFW content detected. Upload blocked.");
+            return;
+          }
         }
-  
+
         uploadData.append("files", file); // Ensure all files are added properly
       }
       uploadData.append("capsuleId", id);
@@ -65,13 +68,13 @@ const CapsuleUploadPage = () => {
       });
 
       if (response.ok) {
-        alert("Files uploaded successfully!");
+        toast.success("Files uploaded successfully!");
         setFormData((prev) => ({ ...prev, files: [] }));
       } else {
-        alert("Failed to upload files.");
+        toast.error("You cannot upload files.");
       }
     } catch (error) {
-      alert("Error uploading files");
+      toast.error("Error uploading files");
     } finally {
       setLoading(false);
     }
@@ -95,10 +98,10 @@ const CapsuleUploadPage = () => {
           newViewers: formData.viewers.split(",").map((e) => e.trim()).filter(Boolean),
         }),
       });
-      if (response.ok) alert("Capsule updated successfully!");
-      else alert("Failed to update capsule.");
+      if (response.ok) toast.success("Capsule updated successfully!");
+      else toast.error("You cannot update capsule.");
     } catch (error) {
-      alert("Error updating capsule");
+      toast.error("Error updating capsule");
     } finally {
       setLoading(false);
     }
@@ -116,14 +119,14 @@ const CapsuleUploadPage = () => {
         },
         body: JSON.stringify({ capsuleId: id }),
       });
-      if(res.ok){
-        alert("LOCKED");
+      if (res.ok) {
+        toast.success("LOCKED");
         navigate("/home");
       }
       else throw new Error(res.message);
 
     } catch (error) {
-      alert("Failed to Lock capsule.");
+      toast.error("Failed to Lock capsule.");
     } finally {
       setLoading(false);
     }

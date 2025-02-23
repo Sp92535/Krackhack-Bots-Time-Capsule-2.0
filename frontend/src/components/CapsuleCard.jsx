@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./CapsuleCard.css";
+import { toast } from "react-toastify";
 
 const CapsuleCard = ({ capsule, fetchCapsules }) => {
   const navigate = useNavigate();
@@ -46,9 +47,9 @@ const CapsuleCard = ({ capsule, fetchCapsules }) => {
         return;
       }
       const data = await response.json();
-      alert(data.message);
+      toast.update(data.message);
     } catch (error) {
-      alert("CLIENT ERROR");
+      toast.update("CLIENT ERROR");
     }
   };
 

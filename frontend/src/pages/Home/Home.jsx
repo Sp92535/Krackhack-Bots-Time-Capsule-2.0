@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Navbar from "../../components/Navbar";
 import "./Home.css";
 import CapsuleCard from "../../components/CapsuleCard";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const [capsules, setCapsules] = useState([]);
@@ -11,7 +12,7 @@ const Home = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryTime");
-    alert("Logged out successfully.");
+    toast.success("Logged out successfully.");
     navigate("/login"); // Navigate after logout
   };
   const fetchCapsules = async () => {
