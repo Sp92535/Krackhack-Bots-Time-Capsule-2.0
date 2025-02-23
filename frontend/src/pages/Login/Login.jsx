@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css"; // Import the updated Login.css
+import config from "../../config";
 
 const Login = ({ switchToSignup }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Login = ({ switchToSignup }) => {
 
     try {
       setLoading(true)      
-      const response = await fetch("http://localhost:6969/api/auth/login", {
+      const response = await fetch(`${config.apiUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

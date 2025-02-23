@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./CreateCapsule.css";
+import config from "../../config";
 
 const CreateCapsule = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const CreateCapsule = () => {
 
       console.log(JSON.stringify(formData)); // Fixed the incorrect console.log9
 
-      const response = await fetch("http://localhost:6969/api/capsule/create-capsule", {
+      const response = await fetch(`${config.apiUrl}/capsule/create-capsule`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

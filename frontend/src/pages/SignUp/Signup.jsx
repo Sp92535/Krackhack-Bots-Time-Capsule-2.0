@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Signup.css";
+import config from "../../config";
 
 const Signup = ({ switchToLogin }) => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Signup = ({ switchToLogin }) => {
 
     try {
       setLoading(true)
-      const response = await fetch("http://localhost:6969/api/auth/register", {
+      const response = await fetch(`${config.apiUrl}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

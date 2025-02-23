@@ -86,7 +86,7 @@ const CapsuleUploadPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:6969/api/capsule/update-capsule", {
+      const response = await fetch(`${config.apiUrl}/capsule/update-capsule`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +112,7 @@ const CapsuleUploadPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:6969/api/capsule/lock", {
+      const res = await fetch(`${config.apiUrl}/capsule/lock`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
