@@ -1,9 +1,9 @@
 /* Explore.css */
-/* General Styles */
+/* Generall-capsul Styles */
 .explore-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px 20px 40px;
+  padding: 30px 20px 40px;
   text-align: center;
   min-height: 100vh;
 }
@@ -16,6 +16,10 @@
   animation: fadeInUp 0.8s ease;
 }
 
+.all-capsules-section h2 {
+  font-size: 2.5rem; /* Adjust this value as needed */
+  margin-bottom: 20px; /* Optional: adjust spacing */
+}
 
 .explore-container p {
   font-size: 1.3rem;

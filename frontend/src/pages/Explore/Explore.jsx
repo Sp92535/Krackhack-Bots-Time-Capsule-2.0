@@ -33,20 +33,20 @@ const Explore = () => {
     navigate("/create-capsule");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("expiryTime");
-    alert("Logged out successfully.");
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("expiryTime");
+  //   alert("Logged out successfully.");
+  //   navigate("/login");
+  // };
 
   return (
     <>
       <Navbar />
-      <button onClick={handleLogout}>Logout</button>
+      {/* <button onClick={handleLogout}>Logout</button> */}
       <div className="explore-container">
-        <h1>Discover the Digital Time Capsule</h1>
-        <p>Explore how our platform works and start preserving memories today!</p>
+        <h1>Preserve Memories for the Future</h1>
+        <p>Make your Time Capsule Today, or you will regret it Tomorrow!</p>
         <div className="capsules-container">
           <div className="capsule-card create-capsule" onClick={handleCreateCapsule}>
             <h3>Create New Capsule</h3>

@@ -78,11 +78,18 @@ const CreateCapsule = () => {
             <textarea name="description" value={formData.description} onChange={handleChange} rows="5" required></textarea>
           </div>
           <div className="form-group">
-            <label>
-              Make Capsule Public
-            </label>
-              <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })} />
-          </div>
+  <label className="checkbox-label" htmlFor="isPublic">
+    Make Capsule Public
+  </label>
+  <input 
+    type="checkbox" 
+    id="isPublic" 
+    className="checkbox" 
+    name="isPublic" 
+    checked={formData.isPublic} 
+    onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })} 
+  />
+</div>
 
           <div className="form-group">
             <label>Unlock Date</label>
