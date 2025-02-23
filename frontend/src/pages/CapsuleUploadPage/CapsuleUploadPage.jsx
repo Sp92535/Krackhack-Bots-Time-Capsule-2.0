@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "./CapsuleUploadPage.css";
+import config from "../../config";
 
 const CapsuleUploadPage = () => {
   const { id } = useParams();
@@ -45,7 +46,7 @@ const CapsuleUploadPage = () => {
 
         // Step 1: Check NSFW content
         if (fileType) {
-          const nsfwResponse = await fetch(`http://localhost:5000/upload/${fileType}`, {
+          const nsfwResponse = await fetch(`${config.checkUrl}/upload/${fileType}`, {
             method: "POST",
             body: fd,
           });

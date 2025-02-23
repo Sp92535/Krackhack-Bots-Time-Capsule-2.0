@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "./Explore.css";
 import Navbar from "../../components/Navbar";
 import CapsuleCard from "../../components/CapsuleCard";
+import config from "../../config";
 
 const Explore = () => {
   const [myCapsules, setMyCapsules] = useState([]);
@@ -15,7 +16,7 @@ const Explore = () => {
     const fetchAllCapsules = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:6969/api/capsule/all-capsules", {
+        const response = await fetch(`${config.apiUrl}/api/capsule/all-capsules`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();

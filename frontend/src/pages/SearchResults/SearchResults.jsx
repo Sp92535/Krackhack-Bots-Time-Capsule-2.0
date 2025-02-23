@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Navbar from "../../components/Navbar";
 import CapsuleCard from "../../components/CapsuleCard";
+import config from "../../config";
 
 const SearchResults = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -16,8 +16,8 @@ const SearchResults = () => {
       if (!searchQuery) return;
       try {
         const token = localStorage.getItem("token");
-        await fetch("http://localhost:5000/api/capsule/reload");
-        const response = await fetch(`http://localhost:5000/api/capsule/search?query=${encodeURIComponent(searchQuery)}`, {
+        await fetch(`${config.checkUrl}/api/capsule/reload`);
+        const response = await fetch(`${config.checkUrl}/api/capsule/search?query=${encodeURIComponent(searchQuery)}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json()

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Navbar.css";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [query, setQuery] = useState("");
@@ -16,7 +17,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryTime");
-    alert("Logged out successfully.");
+    toast.success("Logged out successfully.");
     navigate("/login");
   };
 
