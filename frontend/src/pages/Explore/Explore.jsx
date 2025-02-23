@@ -16,7 +16,7 @@ const Explore = () => {
     const fetchAllCapsules = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${config.apiUrl}/api/capsule/all-capsules`, {
+        const response = await fetch(`${config.apiUrl}/capsule/all-capsules`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
