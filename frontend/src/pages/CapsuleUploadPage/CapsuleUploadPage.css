@@ -1,0 +1,32 @@
+.capsule-upload-container {
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .capsule-upload-container h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .capsule-upload-container input {
+    margin: 10px 0;
+  }
+  
+  .capsule-upload-container button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .capsule-upload-container button:hover {
+    background-color: #0056b3;
+  }
+  
